@@ -112,7 +112,10 @@ use DBName  // activate DB to run query
 + and
 
     ```mongojs
-    db.collectionName.find({$and:[{key:{$gte:val}}, {key:{$lte:val}}]})
+    db.collectionName.find({$and:[
+        {key:{$gte:val}},
+        {key:{$lte:val}}
+        ]})
     ```
 
 + search by array element
@@ -127,9 +130,9 @@ use DBName  // activate DB to run query
 
     ```mongojs
     /*
-    1st arg: null => all data (no condition), 
-    2nd arg: projection => [1: show, 0:hide]
-    ** By default _id=1
+    1st arg : condition, 
+    2nd arg : projection => [1: show, 0:hide]
+    By default _id=1
     */
 
     db.collectionName.find({}, {key: 1, _id: 0})
@@ -138,5 +141,9 @@ use DBName  // activate DB to run query
 + condition in nested key
 
     ```mongojs
-    db.collectionName.find({$and:[{key:"Manu Lorenz"}, {"key.nestedKey":"val"}]})
+    db.collectionName.find({$and:
+    [
+        {key:"Manu Lorenz"}, 
+        {"key.nestedKey":"val"}
+    ]})
     ```
