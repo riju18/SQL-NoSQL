@@ -1,6 +1,7 @@
 # How to use MongoDB
 
 + [**Syntax**](#syntax)
++ [**Data Type**](#data_type)
 + [**DB list**](#db)
 + [**Create**](#create)
 + [**Read**](#read)
@@ -11,20 +12,34 @@
 
 # syntax
 
-+ **$and**  : and
-+ **$or**   : or
-+ **$gt**   : greater than
-+ **$gte**  : greater than equal
-+ **$lt**   : less than
-+ **$lte**  : less than equal
-+ **$eq**   : equal
-+ **$ne**   : not equal
++ **$and**              : and
++ **$or**               : or
++ **$gt**               : greater than
++ **$gte**              : greater than equal
++ **$lt**               : less than
++ **$lte**              : less than equal
++ **$eq**               : equal
++ **$ne**               : not equal
++ **new Date()**        : current datetime
++ **new TimeStamp()**   : current timestamp
+
+# data_type
+
++ Text          : string
++ Boolean       : true/false
++ Number        : int32, int64, decimal
++ ObjectId      : auto generated random string ID
++ ISODate       : date (2023-01-03)
++ Timestamp     : uique time (11421532)
++ Embedded Doc  : nested doc
++ array         :
 
 # db
 
 ```mongojs
 show dbs  // DB list
-use DBName  // activate DB to run query
+use DBName  // create/activate DB to run query
+db.stats()
 ```
 
 # create
@@ -116,6 +131,7 @@ use DBName  // activate DB to run query
         {key:{$gte:val}},
         {key:{$lte:val}}
         ]})
+    // upper limit included
     ```
 
 + search by array element
