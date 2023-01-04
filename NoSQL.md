@@ -9,6 +9,7 @@
 + [**Delete**](#delete)
 + [**Condition**](#condition)
 + [**Projection**](#projection)
++ [**Aggregation**](#aggregation)
 
 # syntax
 
@@ -169,4 +170,21 @@ db.stats()
         {key:"Manu Lorenz"}, 
         {"key.nestedKey":"val"}
     ]})
+    ```
+
+# aggregation
+
++ lookup
+
+    > It's used to merge two collections
+
+    ```mongojs
+    db.collectionName1.aggregate([
+        {$lookup:
+            {from:"collectionName2", 
+            localField: "keyName", foreignField:"keyName",
+            as:"alias"
+            }
+        }
+        ])
     ```
