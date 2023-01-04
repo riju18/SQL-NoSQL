@@ -25,14 +25,14 @@
 
 # data_type
 
-+ Text          : string
-+ Boolean       : true/false
-+ Number        : int32, int64, decimal
-+ ObjectId      : auto generated random string ID
-+ ISODate       : date (2023-01-03)
-+ Timestamp     : uique time (11421532)
-+ Embedded Doc  : nested doc
-+ array         :
++ **Text**          : string
++ **Boolean**       : true/false
++ **Number**        : int32, int64, decimal
++ **ObjectId**      : auto generated random string ID
++ **ISODate**       : date (2023-01-03)
++ **Timestamp**     : uique time (11421532)
++ **Embedded Doc**  : nested doc
++ **array**         :
 
 # db
 
@@ -102,10 +102,17 @@ db.stats()
     db.collectionName.updateMany({key:{$gt:val}}, {$set:key:"val"}})
     ```
 
-+ update multiple doc without cond.
++ update multiple doc without cond
 
     ```mongojs
     db.collectionName.updateMany({}, {$set:{key:"val"}})
+    ```
+
++ update array
+
+    ```mongojs
+    db.collectionName.updateMany({"arrayKey":"arrayVal"}, 
+    {$set:{"arrayKey":["arrayVal"]}})
     ```
 
 # delete
