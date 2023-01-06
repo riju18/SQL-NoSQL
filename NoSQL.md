@@ -67,6 +67,12 @@ db.stats()
         ])
     ```
 
++ insert doc through cmd
+
+    ```mongojs
+    mongoimport *.json -d dbName -c collectionName jsonArray --drop
+    ```
+
 # read
 
 + get all data from collection
