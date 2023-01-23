@@ -7,7 +7,6 @@
 + [**Read**](#read)
 + [**Update**](#update)
 + [**Delete**](#delete)
-+ [**Condition**](#condition)
 + [**Projection**](#projection)
 + [**Aggregation**](#aggregation)
 
@@ -15,12 +14,17 @@
 
 + **$and**              : and
 + **$or**               : or
++ **$nor**              : opposite of or
++ **$not**              : documents that do not match
 + **$gt**               : greater than
 + **$gte**              : greater than equal
 + **$lt**               : less than
 + **$lte**              : less than equal
 + **$eq**               : equal
 + **$ne**               : not equal
++ **$in**               : in
++ **$nin**              : not in
++ **$exists**           : check the field exists or not
 + **new Date()**        : current datetime
 + **new TimeStamp()**   : current timestamp
 
@@ -87,6 +91,69 @@ db.stats()
     db.collectionName.findOne()
     ```
 
++ count of documents
+
+    ```mongojs
+    db.collectionName.find().count()
+    ```
+
++ condition
+  + and
+
+    ```mongojs
+    db.collectionName.find({$and:[
+        {key:{$gte:val}},
+        {key:{$lte:val}}
+        ]})
+    // upper limit included
+    ```
+
+  + or
+
+    ```text
+    same as "and" operator
+    ```
+
+  + search by array element
+
+    ```mongojs
+    // it works as in
+    db.collectionName.find({arrayKey:"val"})
+
+    // it works as equal
+    db.collectionName.find({arrayKey:["val"]})
+    ```
+
+  + exists
+
+    ```mongojs
+    // returns the doc with null & not null values
+    db.collectionName.find({key: {$exists:true}})
+    
+    // check key exists and not null
+    db.collectionName.find({key: {$exists:true, $ne:null}})
+    ```
+
+  + type
+    > specific data type
+    >
+    > [data type doc](https://www.mongodb.com/docs/manual/reference/operator/query/type/#mongodb-query-op.-type)
+
+    ```mongojs
+    db.collectionName.find({"key":{$type:["string"]}})
+    ```
+
+  + regex
+    > matches pattern from text
+    >
+    > as like SQL "**ilike/like**" operator
+    >
+    > [regex](https://www.mongodb.com/docs/manual/reference/operator/query/regex/#mongodb-query-op.-regex)
+
+    ```mongojs
+    db.collectionName.find({"summary": {$regex: /musical/}})
+    ```
+
 # update
 
 + update one doc
@@ -134,24 +201,6 @@ db.stats()
 
     ```mongojs
     db.collectionName.deleteMany({key:{$lt:val}})
-    ```
-
-# condition
-
-+ and
-
-    ```mongojs
-    db.collectionName.find({$and:[
-        {key:{$gte:val}},
-        {key:{$lte:val}}
-        ]})
-    // upper limit included
-    ```
-
-+ search by array element
-
-    ```mongojs
-    db.collectionName.find({arrayKey:"val"})
     ```
 
 # projection
