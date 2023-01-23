@@ -1,50 +1,34 @@
 # How to use MongoDB
 
 + [**Syntax**](#syntax)
-+ [**Data Type**](#data_type)
 + [**DB list**](#db)
 + [**Create**](#create)
 + [**Read**](#read)
 + [**Update**](#update)
 + [**Delete**](#delete)
++ [**Condition**](#condition)
 + [**Projection**](#projection)
-+ [**Aggregation**](#aggregation)
 
 # syntax
 
-+ **$and**              : and
-+ **$or**               : or
-+ **$nor**              : opposite of or
-+ **$not**              : documents that do not match
-+ **$gt**               : greater than
-+ **$gte**              : greater than equal
-+ **$lt**               : less than
-+ **$lte**              : less than equal
-+ **$eq**               : equal
-+ **$ne**               : not equal
-+ **$in**               : in
-+ **$nin**              : not in
-+ **$exists**           : check the field exists or not
-+ **new Date()**        : current datetime
-+ **new TimeStamp()**   : current timestamp
-
-# data_type
-
-+ **Text**          : string
-+ **Boolean**       : true/false
-+ **Number**        : int32, int64, decimal
-+ **ObjectId**      : auto generated random string ID
-+ **ISODate**       : date (2023-01-03)
-+ **Timestamp**     : uique time (11421532)
-+ **Embedded Doc**  : nested doc
-+ **array**         :
++ **$and**      : and
++ **$or**       : or
++ **$gt**       : greater than
++ **$gte**      : greater than equal
++ **$lt**       : less than
++ **$lte**      : less than equal
++ **$eq**       : equal
++ **$ne**       : not equal
++ **$expr**     : for comparison
++ **$cond**     : custom condition
++ **$size**     : no of array elements
++ **$elemMatch** : it applies all cond in same doc
 
 # db
 
 ```mongojs
 show dbs  // DB list
-use DBName  // create/activate DB to run query
-db.stats()
+use DBName  // activate DB to run query
 ```
 
 # create
@@ -71,12 +55,6 @@ db.stats()
         ])
     ```
 
-+ insert doc through cmd
-
-    ```mongojs
-    mongoimport *.json -d dbName -c collectionName jsonArray --drop
-    ```
-
 # read
 
 + get all data from collection
@@ -91,67 +69,72 @@ db.stats()
     db.collectionName.findOne()
     ```
 
-+ count of documents
-
-    ```mongojs
-    db.collectionName.find().count()
-    ```
-
 + condition
-  + and
+
+  + and / or
 
     ```mongojs
-    db.collectionName.find({$and:[
-        {key:{$gte:val}},
-        {key:{$lte:val}}
-        ]})
-    // upper limit included
+    db.collectionName.find({$and:
+        [
+            {key:{$gte:val}}, 
+            {key:{$lte:val}}
+        ]}
+    )
     ```
 
-  + or
+  + elemMatch
 
-    ```text
-    same as "and" operator
+  > It applies condition in same doc. If all condition is true in same doc then it returns those doc.
+
+    ```
+    db.collectionName.find({key:{
+        $elemMatch:
+            {"nestedKey1": "val1"}, 
+            {"nestedKey2": "val2"}}}, 
+        {key:1, _id:0}
+    )
     ```
 
-  + search by array element
++ search by array element
 
     ```mongojs
-    // it works as in
     db.collectionName.find({arrayKey:"val"})
-
-    // it works as equal
-    db.collectionName.find({arrayKey:["val"]})
     ```
 
-  + exists
++ search by array/nested doc
 
     ```mongojs
-    // returns the doc with null & not null values
-    db.collectionName.find({key: {$exists:true}})
-    
-    // check key exists and not null
-    db.collectionName.find({key: {$exists:true, $ne:null}})
+    db.collectionName.find(
+        {arrayKey.nestedKey:"val"}
+    )
     ```
 
-  + type
-    > specific data type
-    >
-    > [data type doc](https://www.mongodb.com/docs/manual/reference/operator/query/type/#mongodb-query-op.-type)
+    + search by exact value but it follows the order
+
+        ```mongojs
+        // it always returns those doc which has order val1 then val2
+
+        db.collectionName.find(
+            {arrayKey.nestedKey:["val1", "val2"]}
+        )
+        ```
+
+    + search by exact value but it follows no order
+
+        ```mongojs
+        // it always return those doc which has val1 & val2 in array
+
+        db.collectionName.find({arrayKey:
+            {$all:["val1", "val2"]}},
+            {"arrayKey":1})
+        ```
+
++ search by number of array elements
 
     ```mongojs
-    db.collectionName.find({"key":{$type:["string"]}})
-    ```
+    // return the array of size 5
 
-  + regex
-    > matches pattern from text
-    >
-    > as like SQL "**ilike/like**" operator
-    >
-    > [regex](https://www.mongodb.com/docs/manual/reference/operator/query/regex/#mongodb-query-op.-regex)
-
-    ```mongojs
-    db.collectionName.find({"summary": {$regex: /musical/}})
+    db.collectionName.find({arrayKey:{$size: 5}}, {"arrayKey":1})
     ```
 
 # update
@@ -176,17 +159,10 @@ db.stats()
     db.collectionName.updateMany({key:{$gt:val}}, {$set:key:"val"}})
     ```
 
-+ update multiple doc without cond
++ update multiple doc without cond.
 
     ```mongojs
     db.collectionName.updateMany({}, {$set:{key:"val"}})
-    ```
-
-+ update array
-
-    ```mongojs
-    db.collectionName.updateMany({"arrayKey":"arrayVal"}, 
-    {$set:{"arrayKey":["arrayVal"]}})
     ```
 
 # delete
@@ -209,37 +185,10 @@ db.stats()
 
     ```mongojs
     /*
-    1st arg : condition, 
-    2nd arg : projection => [1: show, 0:hide]
-    By default _id=1
+    1st arg: null => all data (no condition), 
+    2nd arg: projection => [1: show, 0:hide]
+    ** By default _id=1
     */
 
     db.collectionName.find({}, {key: 1, _id: 0})
-    ```
-
-+ condition in nested key
-
-    ```mongojs
-    db.collectionName.find({$and:
-    [
-        {key:"Manu Lorenz"}, 
-        {"key.nestedKey":"val"}
-    ]})
-    ```
-
-# aggregation
-
-+ lookup
-
-    > It's used to merge two collections
-
-    ```mongojs
-    db.collectionName1.aggregate([
-        {$lookup:
-            {from:"collectionName2", 
-            localField: "keyName", foreignField:"keyName",
-            as:"alias"
-            }
-        }
-        ])
     ```
