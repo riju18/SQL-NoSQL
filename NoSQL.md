@@ -11,6 +11,7 @@
 
 # syntax
 
+<<<<<<< HEAD
 + **$and**          : and
 + **$or**           : or
 + **$gt**           : greater than
@@ -24,6 +25,20 @@
 + **$size**         : no of array elements
 + **$elemMatch**    : it applies all cond in same doc
 + **$slice**        : it skips some array elements
+=======
++ **$and**      : and
++ **$or**       : or
++ **$gt**       : greater than
++ **$gte**      : greater than equal
++ **$lt**       : less than
++ **$lte**      : less than equal
++ **$eq**       : equal
++ **$ne**       : not equal
++ **$expr**     : for comparison
++ **$cond**     : custom condition
++ **$size**     : no of array elements
++ **$elemMatch** : it applies all cond in same doc
+>>>>>>> 4461196f3b3b1dc97af9728918f9efe0370c4ecf
 
 # db
 
@@ -64,6 +79,7 @@ use DBName  // activate DB to run query
     db.collectionName.findOne()
     ```
 
+<<<<<<< HEAD
 + get all data from collection
 
     ```mongojs
@@ -87,6 +103,8 @@ use DBName  // activate DB to run query
     db.collectionName.find().skip(10).limit(10)
     ```
 
+=======
+>>>>>>> 4461196f3b3b1dc97af9728918f9efe0370c4ecf
 + condition
 
   + and / or
@@ -102,7 +120,11 @@ use DBName  // activate DB to run query
 
   + elemMatch
 
+<<<<<<< HEAD
     > It applies all condition in same doc. If all condition is true in same doc then it returns those doc.
+=======
+  > It applies condition in same doc. If all condition is true in same doc then it returns those doc.
+>>>>>>> 4461196f3b3b1dc97af9728918f9efe0370c4ecf
 
     ```
     db.collectionName.find({key:{
@@ -151,6 +173,7 @@ use DBName  // activate DB to run query
 
     ```mongojs
     // return the array of size 5
+<<<<<<< HEAD
 
     db.collectionName.find({arrayKey:{$size: 5}}, {"arrayKey":1})
     ```
@@ -170,6 +193,10 @@ use DBName  // activate DB to run query
     db.collectionName.find({}, 
         {"genres":{$slice:[1,2]}, name:1}
     )
+=======
+
+    db.collectionName.find({arrayKey:{$size: 5}}, {"arrayKey":1})
+>>>>>>> 4461196f3b3b1dc97af9728918f9efe0370c4ecf
     ```
 
 # update
