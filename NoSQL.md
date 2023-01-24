@@ -11,18 +11,19 @@
 
 # syntax
 
-+ **$and**      : and
-+ **$or**       : or
-+ **$gt**       : greater than
-+ **$gte**      : greater than equal
-+ **$lt**       : less than
-+ **$lte**      : less than equal
-+ **$eq**       : equal
-+ **$ne**       : not equal
-+ **$expr**     : for comparison
-+ **$cond**     : custom condition
-+ **$size**     : no of array elements
-+ **$elemMatch** : it applies all cond in same doc
++ **$and**          : and
++ **$or**           : or
++ **$gt**           : greater than
++ **$gte**          : greater than equal
++ **$lt**           : less than
++ **$lte**          : less than equal
++ **$eq**           : equal
++ **$ne**           : not equal
++ **$expr**         : for comparison
++ **$cond**         : custom condition
++ **$size**         : no of array elements
++ **$elemMatch**    : it applies all cond in same doc
++ **$slice**        : it skips some array elements
 
 # db
 
@@ -57,16 +58,33 @@ use DBName  // activate DB to run query
 
 # read
 
++ get single data from collection
+
+    ```mongojs
+    db.collectionName.findOne()
+    ```
+
 + get all data from collection
 
     ```mongojs
     db.collectionName.find()
     ```
 
-+ get single data from collection
++ sorting data
 
     ```mongojs
-    db.collectionName.findOne()
+    // key: 1   --> asc
+    // key: -1  --> desc
+
+    db.collectionName.find().sort({key:1})
+    ```
+
++ skip & limit data
+
+    ```mongojs
+    // skip & limt 10 data 
+
+    db.collectionName.find().skip(10).limit(10)
     ```
 
 + condition
@@ -84,7 +102,7 @@ use DBName  // activate DB to run query
 
   + elemMatch
 
-  > It applies condition in same doc. If all condition is true in same doc then it returns those doc.
+    > It applies all condition in same doc. If all condition is true in same doc then it returns those doc.
 
     ```
     db.collectionName.find({key:{
@@ -135,6 +153,23 @@ use DBName  // activate DB to run query
     // return the array of size 5
 
     db.collectionName.find({arrayKey:{$size: 5}}, {"arrayKey":1})
+    ```
+
++ slicing array elements
+
+    ```mongojs
+    // return only 1st 2 array elements
+
+    db.collectionName.find({}, 
+        {"genres":{$slice:2}, name:1}
+    )
+
+
+    // it skips 1st array element then returns next 2 array elements
+
+    db.collectionName.find({}, 
+        {"genres":{$slice:[1,2]}, name:1}
+    )
     ```
 
 # update
