@@ -214,7 +214,7 @@ select * from pg_catalog.pg_indexes pi2 ;
     ```sql
     select * from parent_table;  -- parent_table + child_table data
     select * from only parent_table;  -- only parent_table data
-    select * from only child_table;  -- only child_table data
+    select * from child_table;  -- only child_table data
     ```
 
   + update table
