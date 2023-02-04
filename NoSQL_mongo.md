@@ -136,25 +136,25 @@ use DBName  // activate DB to run query
     )
     ```
 
-  + search by exact value but it follows the order
++ search by exact value but it follows the order
 
-        ```mongojs
-        // it always returns those doc which has order val1 then val2
+    ```mongojs
+    // it always returns those doc which has order val1 then val2
 
-        db.collectionName.find(
-            {arrayKey.nestedKey:["val1", "val2"]}
-        )
-        ```
+    db.collectionName.find(
+        {arrayKey.nestedKey:["val1", "val2"]}
+    )
+    ```
 
-  + search by exact value but it follows no order
++ search by exact value but it follows no order
 
-        ```mongojs
-        // it always return those doc which has val1 & val2 in array
+    ```mongojs
+    // it always return those doc which has val1 & val2 in array
 
-        db.collectionName.find({arrayKey:
-            {$all:["val1", "val2"]}},
-            {"arrayKey":1})
-        ```
+    db.collectionName.find({arrayKey:
+        {$all:["val1", "val2"]}},
+        {"arrayKey":1})
+    ```
 
 + search by number of array elements
 
