@@ -219,7 +219,7 @@ use DBName  // activate DB to run query
 
 + update & increment/multiply
 
-> can't use $inc/$mul & $set on same field on single operation
+    > can't use $inc/$mul & $set on same field on single operation
 
     ```mongojs
     // must be numeric key
