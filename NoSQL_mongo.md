@@ -19,6 +19,15 @@
 + **$lte**          : less than equal
 + **$eq**           : equal
 + **$ne**           : not equal
++ **$inc**          : increment by
++ **$min**          : new value < existing value then update
++ **$max**          : new value > existing value then update
++ **$mul**          : multiply by
++ **$rename**       : rename new col
++ **$push**         : add element into array key
++ **$addToSet**     : like $push but only keeps unique val 
++ **$pull**         : remove element from array key
++ **$pop**          : remove element from array key by pos
 + **$expr**         : for comparison
 + **$cond**         : custom condition
 + **$size**         : no of array elements
@@ -127,7 +136,7 @@ use DBName  // activate DB to run query
     )
     ```
 
-    + search by exact value but it follows the order
+  + search by exact value but it follows the order
 
         ```mongojs
         // it always returns those doc which has order val1 then val2
@@ -137,7 +146,7 @@ use DBName  // activate DB to run query
         )
         ```
 
-    + search by exact value but it follows no order
+  + search by exact value but it follows no order
 
         ```mongojs
         // it always return those doc which has val1 & val2 in array
@@ -177,7 +186,9 @@ use DBName  // activate DB to run query
 + update one doc
 
     ```mongojs
-    db.collectionName.updateOne({key:val},{$set:{key: "val"}})
+    db.collectionName.updateOne(
+        {key:val},
+        {$set:{key: "val"}})
     ```
 
 + update multiple doc
@@ -185,7 +196,13 @@ use DBName  // activate DB to run query
     ```mongojs
     // insert embedded/nested doc
 
-    db.collectionName.updateMany({}, {$set:{key:{nestedKey1:"val", nestedKey2:"val"}}})
+    db.collectionName.updateMany({}, 
+    {$set:
+        {key:
+            {nestedKey1:"val", 
+            nestedKey2:"val"
+        }
+    }})
     ```
 
 + update multiple doc with cond
@@ -199,6 +216,64 @@ use DBName  // activate DB to run query
     ```mongojs
     db.collectionName.updateMany({}, {$set:{key:"val"}})
     ```
+
++ update & increment/multiply
+
+> can't use $inc/$mul & $set on same field on single operation
+
+    ```mongojs
+    // must be numeric key
+
+    db.collectionName.updateOne(
+        {key:"value"}, 
+        {$inc: {"key": value}}
+        )
+    
+    db.collectionName.updateOne(
+        {key:"value"}, 
+        {$inc: {"key": value},
+        $set:{key: "value"}}
+        )
+    
+    db.collectionName.updateOne(
+        {key:"value"}, 
+        {$mul: {"key": value}}
+        )
+    ```
+
++ remove a key
+
+    ```mongojs
+    // this will remove the key by condition
+    
+    db.collectionName.updateOne(
+        {key:"value"}, 
+        {$unset: {"key": ""}}
+        )
+    ```
+
++ rename
+
+    ```mongojs
+    db.collectionName.updateOne(
+        {}, 
+        {$rename: {"oldKey": "newKey"}}
+        )
+    ```
+
++ upsert
+
+> if data not found then insert
+
+```mongojs
+db.collectionName.updateOne(
+    {key:val}, 
+    {$set:
+        {key1: val1, 
+        key2 : val2, 
+        key3 : val3}}, 
+    {upsert: true})
+```
 
 # delete
 
