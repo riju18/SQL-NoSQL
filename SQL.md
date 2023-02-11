@@ -1,4 +1,5 @@
 + [Server Info](#server-info)
++ [Definition](#definition)
 + [DB Info](#db-info)
 + [Configuration](#config)
 + [User](#user)
@@ -71,6 +72,15 @@
     ```psql
     pg_controldata;
     ```
+
+# definition
+
+| DDL         | DML         | DCl         | TCL      | DQL
+| ----------- | ----------- | ----------- | -------- | ------
+| Create      | Insert      | Grant       | Commit   | Select
+| Drop        | Update      | Revoke      | Rollback |
+| Alter       | Delete      |             | Savepoint|
+| Truncate    | Merge       |             |          |
 
 # db-info
 
