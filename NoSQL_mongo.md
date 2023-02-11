@@ -345,8 +345,14 @@ db.collectionName.updateOne(
 
     ```mongojs
         // 1 index with both condition
-        
+
         db.collectionName.createIndex({
             key1:1,
             key2:1})
         ```
+
++ List of index
+
+    ```mongojs
+    db.collectionName.getIndexes()
+    ```
