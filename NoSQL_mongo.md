@@ -2,12 +2,14 @@
 
 + [**Syntax**](#syntax)
 + [**DB list**](#db)
++ [**Import**](#import)
 + [**Create**](#create)
 + [**Read**](#read)
 + [**Update**](#update)
 + [**Delete**](#delete)
 + [**Condition**](#condition)
 + [**Projection**](#projection)
++ [**Index**](#index)
 
 # syntax
 
@@ -40,6 +42,12 @@
 show dbs  // DB list
 use DBName  // activate DB to run query
 ```
+
+# import
+
+    ```
+    mongoimport fileName.json -d dataBase -c collectionName --jsonArray
+    ```
 
 # create
 
@@ -308,3 +316,5 @@ db.collectionName.updateOne(
 
     db.collectionName.find({}, {key: 1, _id: 0})
     ```
+
+# index
