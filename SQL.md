@@ -75,7 +75,7 @@
 
 # definition
 
-| DDL         | DML         | DCl         | TCL      | DQL
+| DDL         | DML         | DCL         | TCL      | DQL
 | ----------- | ----------- | ----------- | -------- | ------
 | Create      | Insert      | Grant       | Commit   | Select
 | Drop        | Update      | Revoke      | Rollback |
