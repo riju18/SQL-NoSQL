@@ -289,6 +289,12 @@ db.collectionName.updateOne(
     db.collectionName.deleteMany({key:{$lt:val}})
     ```
 
++ delete collection
+
+    ```mongojs
+    db.collectionName.drop({})
+    ```
+
 # projection
 
 + show/hide
