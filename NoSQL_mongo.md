@@ -78,7 +78,7 @@ use DBName  // activate DB to run query
 + query analyze
 
     ```mongojs
-    db.collectionName.explain().find()
+    db.collectionName.explain("executionStats").find()
     ```
 
 + get single data from collection
@@ -325,16 +325,28 @@ db.collectionName.updateOne(
 
 # index
 
-+ create index
++ Single Index
 
-```mongojs
-// key: 1 or -1 (asc/desc)
+  + create index
 
-db.collectionName.createIndex({key:1})
-```
+        ```mongojs
+        // key: 1 or -1 (asc/desc)
 
-+ drop index
+        db.collectionName.createIndex({key:1})
+        ```
 
-```mongojs
-db.collectionName.dropIndex({key:1})
-```
+    + drop index
+
+        ```mongojs
+        db.collectionName.dropIndex({key:1})
+        ```
+
++ Compound Index
+
+    ```mongojs
+        // 1 index with both condition
+        
+        db.collectionName.createIndex({
+            key1:1,
+            key2:1})
+        ```
