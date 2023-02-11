@@ -327,7 +327,7 @@ db.collectionName.updateOne(
 
 + Single Index
 
-  + create index
+    + create index
 
         ```mongojs
         // key: 1 or -1 (asc/desc)
@@ -349,7 +349,7 @@ db.collectionName.updateOne(
         db.collectionName.createIndex({
             key1:1,
             key2:1})
-        ```
+    ```
 
 + List of index
 
