@@ -27,7 +27,7 @@
 + **$mul**          : multiply by
 + **$rename**       : rename new col
 + **$push**         : add element into array key
-+ **$addToSet**     : like $push but only keeps unique val 
++ **$addToSet**     : like $push but only keeps unique val
 + **$pull**         : remove element from array key
 + **$pop**          : remove element from array key by pos
 + **$expr**         : for comparison
@@ -74,6 +74,12 @@ use DBName  // activate DB to run query
     ```
 
 # read
+
++ query analyze
+
+    ```mongojs
+    db.collectionName.explain().find()
+    ```
 
 + get single data from collection
 
@@ -318,3 +324,11 @@ db.collectionName.updateOne(
     ```
 
 # index
+
++ create index
+
+```
+// key: 1 or -1 (asc/desc)
+
+db.collectionName.createIndex({key:1})
+```
