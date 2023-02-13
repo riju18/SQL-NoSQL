@@ -8,6 +8,7 @@
 + [Prvilege](#prvilege)
 + [Inheritance, Partitioning, copy](#inheritance_partitioning_copy)
 + [Backup](#backup)
++ [DQL](#dql)
 
 # server-info
 
@@ -274,3 +275,201 @@ select * from pg_catalog.pg_indexes pi2 ;
     ```
 
 # backup
+
++ coming soon
+
+# dql
+
++ filtering operator : ```>,>=,<,<=,=,<>/!=,between,in,not in,and,or,is null, is not null, like(case sensitive), ilike(case insensitive), having```
++ math operator: ```count,max,min,sum,avg```
+
++ condition
+
+    ```sql
+    select
+      *  -- all col
+    from
+      tableName 
+    where 1=1
+      and colName = value ;
+    ```
+
++ limit & offset
+
+  ```sql
+  -- offset: how many rows it skips
+  select
+    colName1
+    , colName2
+  from
+    tableName 
+  offset 1 ;
+
+  -- limit: how many rows will be fetched after skipping
+  select
+    colName1
+    , colName2
+  from
+    tableName 
+  limit 10 offset 1 ;
+  ```
+
++ unique val
+
+  ```sql
+  select
+      distinct colName1
+  from
+    tableName ;
+  ```
+
++ search text exists or not
+
+  ```sql
+  -- check pattern anywhere in the text
+  select
+    *
+  from
+    tableName 
+  where 1=1
+    and colName1 ilike '%bi%' ;
+  
+  -- check pattern at the beginning in the text
+  select
+    *
+  from
+    tableName 
+  where 1=1
+    and colName1 ilike 'bi%' ;
+  
+  -- check pattern at the end in the text
+  select
+    *
+  from
+    tableName 
+  where 1=1
+    and colName1 ilike '%bi' ;
+  
+  -- alternate of ilike
+  select
+    *
+  from
+    tableName 
+  where 1=1
+    and colName1 ~* 'bi' ;
+  
+   -- alternate of like
+  select
+    *
+  from
+    tableName 
+  where 1=1
+    and colName1 ~ 'Bi' ;
+  ```
+
++ join
+
+  + inner join/join
+
+    ```sql
+    -- if values are same in both col
+    select 
+      t1.colName1 
+      , t1.colName2 
+      , t2.colName3 
+    from tableName1 as t1 
+    join tableName2 as t2 on t1.colName = t2.colName ;
+    ```
+  
+  + left join
+
+    ```sql
+    -- all value from left col & non-matched values are null in right col
+    select 
+      t1.colName1 
+      , t1.colName2 
+      , t2.colName3 
+    from tableName1 as t1 
+    left join tableName2 as t2 on t1.colName = t2.colName ;
+    ```
+  
+  + right join
+
+    ```sql
+    -- all value from right col & non-matched values are null in left col
+    select 
+      t1.colName1 
+      , t1.colName2 
+      , t2.colName3 
+    from tableName1 as t1 
+    right join tableName2 as t2 on t1.colName = t2.colName ;
+    ```
+  
+  + full join / full outer join
+
+    ```sql
+    -- full join: inner join + additional records from left table + additional records from right table
+    select 
+      t1.colName1 
+      , t1.colName2 
+      , t2.colName3 
+    from tableName1 as t1 
+    full join tableName2 as t2 on t1.colName = t2.colName ;
+    ```
+  
+  + cross join
+
+    ```sql
+    -- cross join (cartesian product): left records x right records
+    select 
+      t1.colName1 
+      , t2.colName2 
+    from tableName1 as t1 
+    cross join tableName2 as t2;
+    ```
+  
+  + natural join
+
+    ```sql
+    -- sql will decide based on similiar col from both tables
+    select 
+      t1.colName1 
+      , t2.colName2 
+    from tableName1 as t1 
+    natural join tableName2 as t2;
+    ```
+  
+  + self join
+
+    ```text
+    sample input:
+
+    +----+-------+--------+-----------+
+    | id | name  | salary | managerId |
+    +----+-------+--------+-----------+
+    | 1  | Joe   | 70000  | 3         |
+    | 2  | Henry | 80000  | 4         |
+    | 3  | Sam   | 60000  | Null      |
+    | 4  | Max   | 90000  | Null      |
+    +----+-------+--------+-----------+
+
+    sample output:
+
+    Output: 
+    +----------+
+    | Employee |
+    +----------+
+    | Joe      |
+    +----------+
+    ```
+
+    ```sql
+    select
+      em.name as Employee
+    from 
+      Employee as em
+    join 
+      Employee as ma on em.managerId = ma.id
+    where 1=1
+        and em.salary > ma.salary
+    ```
