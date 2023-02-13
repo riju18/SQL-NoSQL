@@ -9,6 +9,7 @@
 + [Inheritance, Partitioning, copy](#inheritance_partitioning_copy)
 + [Backup](#backup)
 + [DQL](#dql)
++ [View And Materialized view](#view_and_materialized_view)
 
 # server-info
 
@@ -564,4 +565,50 @@ select * from pg_catalog.pg_indexes pi2 ;
       extract(epoch from colName) 
     from 
       tableName ;
+    ```
+
+# view_and_materialized_view
+
++ view
+
+  + points:
+    1. It always provide latest data.
+    2. It doesn't store data.
+
+  ```sql
+  create view viewName
+  as
+  select
+    id
+    , avg(val)
+    , count(1)
+  from tableName
+  group by 1 ;
+
+  select * from viewName ;
+  ```
+
++ materialized view
+
+  + points:
+    1. It doesn't update automatically.
+    2. It stores data
+
+  ```sql
+  create materialized view viewName
+  as
+  select
+    id
+    , avg(val)
+    , count(1)
+  from tableName
+  group by 1 ;
+
+  select * from viewName ;
+  ```
+
+  + update materialized view data
+
+    ```sql
+    refresh materialized view viewName ;
     ```
