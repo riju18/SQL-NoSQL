@@ -496,5 +496,27 @@ select * from pg_catalog.pg_indexes pi2 ;
     , count(t2.colName)
   from tableName1 as t1 
   join tableName2 as t2 on t1.colName = t2.colName 
-  group by 1 ;
+  group by 1 
+  order by 1 ; -- sorting (asc, desc): by default asc
+
+  -- condition on group by
+  -- ex: count more than 3
+  select  
+    t1.colName 
+    , count(t2.colName)
+  from tableName1 as t1 
+  join tableName2 as t2 on t1.colName = t2.colName 
+  group by 1 
+  having count(t2.colName) > 3;
+  ```
+
++ date
+
+  ```sql
+  select current_timestamp ;  -- current date with time
+  select current_date ;   -- current date
+  select current_date + interval '3 hours/minutes/seconds/days/months/years/decades';  -- next
+  select current_date - interval '3 hours/minutes/seconds/days/months/years/decades';  -- previous
+  select dateCol1 - dateCol2;  -- diff between 2 columns
+  select dataCol::date;  -- convert to date type
   ```
