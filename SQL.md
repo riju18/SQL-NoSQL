@@ -286,7 +286,7 @@ select * from pg_catalog.pg_indexes pi2 ;
 # dql
 
 + filtering operator : ```>,>=,<,<=,=,<>/!=,between,in,not in,and,or,is null, is not null, like(case sensitive), ilike(case insensitive), having```
-+ math operator: ```count,max,min,sum,avg```
++ math operator: ```count,max,min,sum,avg,pow,sqrt,abs,round,random,ceil,floor etc```
 
 + condition
 
@@ -525,3 +525,43 @@ select * from pg_catalog.pg_indexes pi2 ;
   select dateCol1 - dateCol2;  -- diff between 2 columns
   select dataCol::date;  -- convert to date type
   ```
+
+  + [date_truc](https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-date_trunc/)
+
+    ```sql
+      select 
+        date_trunc('year', dateCol)  -- ex: 2023-01-01
+        date_trunc('month', dateCol)  -- ex: 2023-02-01, 2023-03-01
+        date_trunc('day', dateCol)  -- ex: 2023-02-13, 2023-02-14 
+        date_trunc('week', '2023-02-13'::date)  -- ex: 2023-02-13(1st day of the week, starts from monday)
+      from 
+        tablename;
+      ```
+
+  + [date_part](https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-date_part/)
+
+    ```sql
+    -- ex: 2023-02-13
+    select 
+      date_part('year', dateCol)  -- ex: 2023
+      date_part('month', dateCol)  -- ex: 02
+      date_part('day', dateCol)  -- ex: 13
+      date_part('hour', dateCol)  -- ex: hour 24 hour format
+      date_part('minute', dateCol)  -- ex: minute
+      date_part('second', dateCol)  -- ex: sec --> 12.62
+    from 
+      tablename;
+    ```
+  
+  + [to_char](https://www.postgresqltutorial.com/postgresql-string-functions/postgresql-to_char/)
+  + [to_date](https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-to_date/)
+  + [extract](https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-extract/)
+
+  + Unix Timestamp: starts from 1970-01-01
+
+    ```sql
+    select 
+      extract(epoch from colName) 
+    from 
+      tableName ;
+    ```
