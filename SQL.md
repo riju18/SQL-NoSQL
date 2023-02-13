@@ -487,3 +487,14 @@ select * from pg_catalog.pg_indexes pi2 ;
   from table1 as t1, avg_salry as t2
   where t1.salary > t2.salary ;
   ```
+
++ group by
+
+  ```sql
+  select  
+    t1.colName 
+    , count(t2.colName)
+  from tableName1 as t1 
+  join tableName2 as t2 on t1.colName = t2.colName 
+  group by 1 ;
+  ```
