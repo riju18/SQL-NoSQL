@@ -272,6 +272,11 @@ select * from pg_catalog.pg_indexes pi2 ;
 
     ```sql
     create table table_name as table source_table with no data; 
+
+    -- or
+    create table tableName
+    as
+    select * from src_table where 1=2;
     ```
 
 # backup
