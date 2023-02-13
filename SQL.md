@@ -473,3 +473,17 @@ select * from pg_catalog.pg_indexes pi2 ;
     where 1=1
         and em.salary > ma.salary
     ```
+
++ with clause
+
+  ```sql
+  with avg_salry as (
+    select
+      avg(colName) as salary
+    from tableName
+  )
+  select
+    salary as real_salary
+  from table1 as t1, avg_salry as t2
+  where t1.salary > t2.salary ;
+  ```
