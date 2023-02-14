@@ -574,9 +574,12 @@ select * from pg_catalog.pg_indexes pi2 ;
   + points:
     1. It always provide latest data.
     2. It doesn't store data.
+    3. Can't change the col name in src code after creating view.
+    4. Can't change the order (have to add new col at the end).
+    5. Can't change the data type.
 
   ```sql
-  create view viewName
+  create or replace view viewName
   as
   select
     id
@@ -586,6 +589,24 @@ select * from pg_catalog.pg_indexes pi2 ;
   group by 1 ;
 
   select * from viewName ;
+
+  -- with check option
+  create or replace view viewName
+  as
+  select
+    id
+    , salary
+    , dept
+  from tableName
+  where dept = 1
+  with check option ;
+
+  /*
+  view created by check option
+  will restrict inserting unnecessary/wrong data. 
+  */
+  insert into viewName
+  values (1, 10000, 2) ;
   ```
 
 + materialized view
@@ -595,7 +616,7 @@ select * from pg_catalog.pg_indexes pi2 ;
     2. It stores data
 
   ```sql
-  create materialized view viewName
+  create or replace materialized view viewName
   as
   select
     id
