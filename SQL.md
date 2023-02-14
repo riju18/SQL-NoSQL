@@ -567,136 +567,136 @@ select * from pg_catalog.pg_indexes pi2 ;
       tableName ;
     ```
   
-  + window fn
++ window fn
 
-    ```row_number,rank,dense_rank,lead,lag,ntile```
+  ```row_number,rank,dense_rank,lead,lag,ntile```
 
-    + row_number
+  + row_number
 
-      ```text
-      Problem: The Latest Login in 2020
-      =================================
-      Input: 
+    ```text
+    Problem: The Latest Login in 2020
+    =================================
+    Input: 
 
-      Logins table:
-      +---------+---------------------+
-      | user_id | time_stamp          |
-      +---------+---------------------+
-      | 6       | 2020-06-30 15:06:07 |
-      | 6       | 2021-04-21 14:06:06 |
-      | 6       | 2019-03-07 00:18:15 |
-      | 8       | 2020-02-01 05:10:53 |
-      | 8       | 2020-12-30 00:46:50 |
-      | 2       | 2020-01-16 02:49:50 |
-      | 2       | 2019-08-25 07:59:08 |
-      | 14      | 2019-07-14 09:00:00 |
-      | 14      | 2021-01-06 11:59:59 |
-      +---------+---------------------+
+    Logins table:
+    +---------+---------------------+
+    | user_id | time_stamp          |
+    +---------+---------------------+
+    | 6       | 2020-06-30 15:06:07 |
+    | 6       | 2021-04-21 14:06:06 |
+    | 6       | 2019-03-07 00:18:15 |
+    | 8       | 2020-02-01 05:10:53 |
+    | 8       | 2020-12-30 00:46:50 |
+    | 2       | 2020-01-16 02:49:50 |
+    | 2       | 2019-08-25 07:59:08 |
+    | 14      | 2019-07-14 09:00:00 |
+    | 14      | 2021-01-06 11:59:59 |
+    +---------+---------------------+
 
-      Output: 
-      +---------+---------------------+
-      | user_id | last_stamp          |
-      +---------+---------------------+
-      | 6       | 2020-06-30 15:06:07 |
-      | 8       | 2020-12-30 00:46:50 |
-      | 2       | 2020-01-16 02:49:50 |
-      +---------+---------------------+
-      ```
+    Output: 
+    +---------+---------------------+
+    | user_id | last_stamp          |
+    +---------+---------------------+
+    | 6       | 2020-06-30 15:06:07 |
+    | 8       | 2020-12-30 00:46:50 |
+    | 2       | 2020-01-16 02:49:50 |
+    +---------+---------------------+
+    ```
 
-      ```sql
-      select
-        t1.user_id
-        , t1.last_stamp
-      from
-      (select
-          user_id
-          ,time_stamp as last_stamp
-          , row_number() over(partition by user_id order by time_stamp desc) as rnk
-      from Logins 
-      where 1=1 
-          and year(time_stamp) = 2020) t1
-      where 1=1
-          and t1.rnk = 1 ;
-      ```
-  
-    + dense_rank and rank
+    ```sql
+    select
+      t1.user_id
+      , t1.last_stamp
+    from
+    (select
+        user_id
+        ,time_stamp as last_stamp
+        , row_number() over(partition by user_id order by time_stamp desc) as rnk
+    from Logins 
+    where 1=1 
+        and year(time_stamp) = 2020) t1
+    where 1=1
+        and t1.rnk = 1 ;
+    ```
 
-      ```text
-      Problem: Rank Scores
-      ======================
+  + dense_rank and rank
 
-      Input:
+    ```text
+    Problem: Rank Scores
+    ======================
 
-      Scores table:
-      +----+-------+
-      | id | score |
-      +----+-------+
-      | 1  | 3.50  |
-      | 2  | 3.65  |
-      | 3  | 4.00  |
-      | 4  | 3.85  |
-      | 5  | 4.00  |
-      | 6  | 3.65  |
-      +----+-------+
+    Input:
 
-      Output:
-      +-------+------+
-      | score | rank |
-      +-------+------+
-      | 4.00  | 1    |
-      | 4.00  | 1    |
-      | 3.85  | 2    |
-      | 3.65  | 3    |
-      | 3.65  | 3    |
-      | 3.50  | 4    |
-      +-------+------+
-      ```
+    Scores table:
+    +----+-------+
+    | id | score |
+    +----+-------+
+    | 1  | 3.50  |
+    | 2  | 3.65  |
+    | 3  | 4.00  |
+    | 4  | 3.85  |
+    | 5  | 4.00  |
+    | 6  | 3.65  |
+    +----+-------+
 
-      ```sql
-      -- dense_rank: it doesn't skip any seq for same val
-      select
-        score
-        , DENSE_RANK() over(order by score desc) as "rank"
-      from Scores ;
+    Output:
+    +-------+------+
+    | score | rank |
+    +-------+------+
+    | 4.00  | 1    |
+    | 4.00  | 1    |
+    | 3.85  | 2    |
+    | 3.65  | 3    |
+    | 3.65  | 3    |
+    | 3.50  | 4    |
+    +-------+------+
+    ```
 
-      -- rank: it skips the seq for same val
-      select
-        score
-        , RANK() over(order by score desc) as "rank"
-      from Scores ;
-      ```
-  
-    + lag: ```previoius record```
+    ```sql
+    -- dense_rank: it doesn't skip any seq for same val
+    select
+      score
+      , DENSE_RANK() over(order by score desc) as "rank"
+    from Scores ;
 
-      ```sql
-      -- dept wise emp previous salary
-      select
-        emp_name
-        , salary
-        , lag(salary) over(partition by dep order by emp_id) as seq
-      
-      -- dept wise emp 1st two previous salary
-      select
-        emp_name
-        , salary
-        , lag(salary,2,0) over(partition by dep order by emp_id) as seq  -- 1st:col, 2nd:how many previous row, 3rd: if null then 0 or custom val
-      ```
+    -- rank: it skips the seq for same val
+    select
+      score
+      , RANK() over(order by score desc) as "rank"
+    from Scores ;
+    ```
+
+  + lag: ```previoius record```
+
+    ```sql
+    -- dept wise emp previous salary
+    select
+      emp_name
+      , salary
+      , lag(salary) over(partition by dep order by emp_id) as seq
     
-    + lead: ```next record```
+    -- dept wise emp 1st two previous salary
+    select
+      emp_name
+      , salary
+      , lag(salary,2,0) over(partition by dep order by emp_id) as seq  -- 1st:col, 2nd:how many previous row, 3rd: if null then 0 or custom val
+    ```
+  
+  + lead: ```next record```
 
-      ```sql
-      -- dept wise emp next salary
-      select
-        emp_name
-        , salary
-        , lead(salary) over(partition by dep order by emp_id) as seq
-      
-      -- dept wise emp 1st two next salary
-      select
-        emp_name
-        , salary
-        , lead(salary,2,0) over(partition by dep order by emp_id) as seq  -- 1st:col, 2nd:how many previous row, 3rd: if null then 0 or custom val
-      ```
+    ```sql
+    -- dept wise emp next salary
+    select
+      emp_name
+      , salary
+      , lead(salary) over(partition by dep order by emp_id) as seq
+    
+    -- dept wise emp 1st two next salary
+    select
+      emp_name
+      , salary
+      , lead(salary,2,0) over(partition by dep order by emp_id) as seq  -- 1st:col, 2nd:how many previous row, 3rd: if null then 0 or custom val
+    ```
 
 # view_and_materialized_view
 
