@@ -569,7 +569,7 @@ select * from pg_catalog.pg_indexes pi2 ;
   
 + window fn
 
-  ```row_number,rank,dense_rank,lead,lag,ntile```
+  ```row_number,rank,dense_rank,lead,lag,ntile,ntj_value, first_value, last_value```
 
   + row_number
 
@@ -696,6 +696,93 @@ select * from pg_catalog.pg_indexes pi2 ;
       emp_name
       , salary
       , lead(salary,2,0) over(partition by dep order by emp_id) as seq  -- 1st:col, 2nd:how many previous row, 3rd: if null then 0 or custom val
+    ```
+  
+  + first_value
+
+    ```sql
+    select
+      colName1  
+    , colName2 
+    , colName3 
+    , first_value ("colName") over(partition by colName order by colName desc) as max_price_product_name
+    from
+      tableName ;
+    ```
+  
+  + last_value
+
+    ```sql
+    select
+      colName1  
+    , colName2 
+    , colName3 
+    , last_value (colName) over(partition by colName order by colName desc range between unbounded preceding and unbounded following) as min_price_product_name
+    from
+      tableName ;
+    ```
+  
+  + nth_value
+
+    ```sql
+    -- 3rd highest
+    select
+       colName1  
+      , colName2 
+      , colName3    
+      , nth_value(colName, 3) over(partition by colName order by ProductPrice desc) as seq
+    from
+      tableName ;
+    ```
+  
+  + ntile: group the whole data into certain buckets
+
+    ```sql
+    -- grouping the whole data based on certain col
+    select
+       colName1  
+      , colName2 
+      , colName3
+      ntile(3) over(partition by colName order by "ProductPrice" desc) as bucket
+    from
+      tableName ;
+
+    -- grouping the whole data
+    select
+       colName1  
+      , colName2 
+      , colName3
+      ntile(3) over(order by "ProductPrice" desc) as bucket
+    from
+      tableName ;
+    ```
+  
+  + cume_dist: the percentage of each row compared to whole dataset.
+
+    ```sql
+    -- top 30% products
+    select 
+      t1.*
+    from
+    (
+      select
+        "ProductPrice"::int ,
+        round(cume_dist() over(order by "ProductPrice" desc)::numeric*100, 2) as cumee_dist
+      from
+       tableName
+    ) t1
+    where 1=1
+      and t1.cumee_dist <= 30 ;
+    ```
+  
+  + percent_rank: relative rank in percentage compared to others
+
+    ```sql
+    select
+      "ProductPrice"::int ,
+      round(percent_rank() over(order by "ProductPrice")::numeric*100, 2) as per_rank
+    from
+      tableName
     ```
 
 # view_and_materialized_view
