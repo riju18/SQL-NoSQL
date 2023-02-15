@@ -10,6 +10,8 @@
 + [**Condition**](#condition)
 + [**Projection**](#projection)
 + [**Index**](#index)
++ [**Geospatial**](#geospatial)
++ [**Aggregate**](#aggregate)
 
 # syntax
 
@@ -24,6 +26,7 @@
 + **$inc**          : increment by
 + **$min**          : new value < existing value then update
 + **$max**          : new value > existing value then update
++ **$sum**          : sum up data
 + **$mul**          : multiply by
 + **$rename**       : rename new col
 + **$push**         : add element into array key
@@ -35,6 +38,7 @@
 + **$size**         : no of array elements
 + **$elemMatch**    : it applies all cond in same doc
 + **$slice**        : it skips some array elements
++ **$near**         : used for geo data
 
 # db
 
@@ -327,7 +331,7 @@ db.collectionName.updateOne(
 
 + Single Index
 
-    + create index
+  + create index
 
         ```mongojs
         // key: 1 or -1 (asc/desc)
@@ -335,7 +339,7 @@ db.collectionName.updateOne(
         db.collectionName.createIndex({key:1})
         ```
 
-    + drop index
+  + drop index
 
         ```mongojs
         db.collectionName.dropIndex({key:1})
@@ -344,15 +348,38 @@ db.collectionName.updateOne(
 + Compound Index
 
     ```mongojs
-        // 1 index with both condition
+    // 1 index with both condition
 
-        db.collectionName.createIndex({
-            key1:1,
-            key2:1})
+    db.collectionName.createIndex({
+        key1:1,
+        key2:1})
     ```
 
 + List of index
 
     ```mongojs
     db.collectionName.getIndexes()
+    ```
+
+# aggregate
+
++ group by
+
+    ```mongojs
+    // 1st arg: condition
+    // 2nd arg: logic
+    // _id    : mandatory
+
+    db.collectionName.aggregate(
+    [
+        {$match: {"key": "val"}},
+        {$group: 
+            {_id: 
+                {key: "$key.nestedKey"},           
+                key1: {$sum: 1}
+            }
+        }
+    ]
+
+    )
     ```
