@@ -8,6 +8,7 @@
 + [Prvilege](#prvilege)
 + [Inheritance, Partitioning, copy](#inheritance_partitioning_copy)
 + [Backup](#backup)
++ [DDL](#ddl)
 + [DQL](#dql)
 + [View And Materialized view](#view_and_materialized_view)
 
@@ -283,6 +284,15 @@ select * from pg_catalog.pg_indexes pi2 ;
 # backup
 
 + coming soon
+
+# ddl
+
++ change column data type
+  + date
+
+    ```sql
+    alter table tableName alter column columnName type date using columnName::date ;
+    ```
 
 # dql
 
