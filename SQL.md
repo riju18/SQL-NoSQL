@@ -766,6 +766,64 @@ select * from pg_catalog.pg_indexes pi2 ;
     from
       tableName ;
     ```
+
+    Ex:
+
+      ```text
+      sample input:
+
+      +----+-------+
+      | id | name  |
+      +----+-------+
+      | 1  | emp1  |
+      | 2  | emp2  |
+      | 3  | emp3  |
+      | 4  | emp4  |
+      | 5  | emp5  |
+      | 6  | emp6  |
+      | 7  | emp7  |
+      | 8  | emp8  |
+      +----+-------+
+
+      sample output:
+
+      Output: 
+      +-----------------+
+      | Employee        |
+      +-----------------+
+      | 1 emp1, 2 emp2  |
+      | 3 emp3, 4 emp4  |
+      | 5 emp5, 6 emp6  |
+      | 7 emp7, 8 emp8  |
+      +-----------------+
+      ```
+
+      ```sql
+      -- solution:
+      -- =========
+      with cte as
+      (
+        select
+          concat(id::text,  ' ',name) as idn
+          , ntile(2) over(order by id) as grp
+        from
+          tableName
+      ),
+      grouping as
+      (
+        select
+          grp
+          , string_agg(idn,', ') as result
+        from 
+          cte
+        group by 1
+        order by 1
+      )
+      select
+        result
+      from 
+        grouping ;  
+      ```
   
   + cume_dist: the percentage of each row compared to whole dataset.
 
