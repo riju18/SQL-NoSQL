@@ -414,8 +414,8 @@ db.collectionName.updateOne(
             gender: 1,
             fullname: {
              $concat: [  // merge multiple columns 
-                    { "$toUpper": { "$substrCP": ["$name.first", 0, 1] } },
-                    {"$substrCP": ["$name.first", 1, { "$subtract": [{ "$strLenCP": "$name.first" }, 1 ]}] },
+                    {$toUpper: { "$substrCP": ["$name.first", 0, 1] } },
+                    {$substrCP: ["$name.first", 1, {$subtract: [{$strLenCP: "$name.first" }, 1 ]}] },
                     " ",
                     {$toLower: "$name.last"}
                 ]
