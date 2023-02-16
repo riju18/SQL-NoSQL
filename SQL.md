@@ -805,7 +805,7 @@ select * from pg_catalog.pg_indexes pi2 ;
       (
         select
           concat(id::text,  ' ',name) as idn
-          , ntile(2) over(order by id) as grp
+          , ntile(4) over(order by id) as grp
         from
           tableName
       ),
