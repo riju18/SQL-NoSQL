@@ -39,6 +39,7 @@
 + **$elemMatch**    : it applies all cond in same doc
 + **$slice**        : it skips some array elements
 + **$near**         : used for geo data
++ **$sort**         : used after grouping
 
 # db
 
@@ -379,6 +380,24 @@ db.collectionName.updateOne(
                 key1: {$sum: 1}
             }
         }
+    ]
+
+    )
+
+    // ====================
+    // sort after group by
+    // ===================
+
+    db.collectionName.aggregate(
+    [
+        {$match: {"key": "val"}},
+        {$group: 
+            {_id: 
+                {key: "$key.nestedKey"},           
+                key1: {$sum: 1}
+            }
+        }
+        , {$sort: {key1: -1}}
     ]
 
     )
