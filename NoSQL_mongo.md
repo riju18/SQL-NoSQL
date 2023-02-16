@@ -40,6 +40,8 @@
 + **$slice**        : it skips some array elements
 + **$near**         : used for geo data
 + **$sort**         : used after grouping
++ **$project**      : used in aggregate fn 
++ **concat**        : merge multiple col/fetaure
 
 # db
 
@@ -399,6 +401,26 @@ db.collectionName.updateOne(
         }
         , {$sort: {key1: -1}}
     ]
-
     )
+    ```
+
++ cocat
+
+    ```mongojs
+    db.persons.aggregate([
+    {
+        $project: {  // show/hide features
+            _id: 0,
+            gender: 1,
+            fullname: {
+             $concat: [  // merge multiple columns 
+                    { "$toUpper": { "$substrCP": ["$name.first", 0, 1] } },
+                    {"$substrCP": ["$name.first", 1, { "$subtract": [{ "$strLenCP": "$name.first" }, 1 ]}] },
+                    " ",
+                    {$toLower: "$name.last"}
+                ]
+            }
+        }
+    }
+    ])
     ```
