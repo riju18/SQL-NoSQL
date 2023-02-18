@@ -293,6 +293,12 @@ select * from pg_catalog.pg_indexes pi2 ;
     ```sql
     alter table tableName alter column columnName type date using columnName::date ;
     ```
+    
++ change table name
+
+    ```sql
+    ALTER TABLE IF EXISTS tableName RENAME TO newTableName ;
+    ```
 
 # dql
 
