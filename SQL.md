@@ -210,19 +210,19 @@ select * from pg_catalog.pg_indexes pi2 ;
 
 # inheritance_partitioning_copy
 
-+ inheritance
+## **<span style="color: orange">inheritance</span>**
 
-    > + All columns of parent table is avalilable in child table.
-    >
-    > + Parent table will show data comming from parent table + child table.
+  > + All columns of parent table is avalilable in child table.
+  >
+  > + Parent table will show data comming from parent table + child table.
 
-  + create table
++ <span style="color: yellow">create table</span>
 
     ```sql
     create table child_table inherits(parent_table);
     ```
 
-  + get data
++ <span style="color: yellow">get data</span>
 
     ```sql
     select * from parent_table;  -- parent_table + child_table data
@@ -230,7 +230,7 @@ select * from pg_catalog.pg_indexes pi2 ;
     select * from child_table;  -- only child_table data
     ```
 
-  + update table
++ <span style="color: yellow">update table</span>
 
     ```sql
     update parent_table set column_name = 'value' -- update both parent & child table data
@@ -238,7 +238,7 @@ select * from pg_catalog.pg_indexes pi2 ;
     update child_table set column_name = 'value' -- update child table data
     ```
 
-  + delete table
++ <<span style="color: yellow">>delete table</span>
 
     ```sql
     drop table parent_table cascade;  -- drop parent_table
@@ -248,22 +248,48 @@ select * from pg_catalog.pg_indexes pi2 ;
     drop table child_table;  -- drop child_table
     ```
 
-+ partitioning
+## <span style="color: orange">partitioning</span>
 
-    > + postgres partitions table via inheritance
-    >
-    > + There are 2 types of partition: **range** & **list**
+> + postgres partitions table via inheritance
+>
+> + There are 2 types of partition : **range** & **list**
 
-  + create child table (partition table)
++ <span style="color: yellow">create child table (partition table)</span>
 
     ```sql
     create table child_table(check(parent_table_column_name condition)) inherits(parent_table);
     -- "check" is a constraint which applies some conditions before iserting data into table.
     ```
 
-    + more to add ....
++ <span style="color: yellow">function</span>
 
-+ copy
+  ```sql
+  CREATE OR REPLACE FUNCTION public.fn_name()
+  RETURNS trigger
+  LANGUAGE plpgsql
+  AS $function$
+  begin
+    if (extract(year from new.parentTabelCol) >= 2015 and extract(year from new.parentTabelCol) < 2016) then
+    insert into public.childTable1 values (new.*) ;
+    elsif (extract(year from new.parentTabelCol) >= 2016 and extract(year from new.parentTabelCol) < 2017) then
+    insert into public.childTable2 values (new.*) ;
+    elsif (extract(year from new.parentTabelCol) >= 2017 and extract(year from new.parentTabelCol) < 2018) then
+    insert into public.childTable3 values (new.*) ;
+    else
+    raise exception 'date must be less than 2018' ;
+    end if ;
+    return null ;
+  end ;
+  $function$ ;
+  ```
+
++ <span style="color: yellow">trigger</span>
+
+  ```sql
+  create trigger triggerName before insert on public.parentTabel for each row execute procedure public.fn_name() ;
+  ```
+
++ <span style="color: yellow">copy</span>
   + create table with data
 
     ```sql
@@ -293,7 +319,7 @@ select * from pg_catalog.pg_indexes pi2 ;
     ```sql
     alter table tableName alter column columnName type date using columnName::date ;
     ```
-    
+
 + change table name
 
     ```sql
