@@ -611,7 +611,7 @@ select * from pg_catalog.pg_indexes pi2 ;
   
 + window fn
 
-  ```row_number,rank,dense_rank,lead,lag,ntile,ntj_value, first_value, last_value```
+  ```row_number,rank,dense_rank,lead,lag,ntile,nth_value, first_value, last_value```
 
   + row_number
 
