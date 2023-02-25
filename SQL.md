@@ -466,6 +466,63 @@ select * from pg_catalog.pg_indexes pi2 ;
     from tableName1 as t1 
     full join tableName2 as t2 on t1.colName = t2.colName ;
     ```
+
+    ```text
+    sample input:
+
+    src table:                   tgt table:
+    +----+-------+               +----+-------+             
+    | id | name  |               | id | name  |
+    +----+-------+               +----+-------+
+    | 1  | a     |               | 1  | a     |
+    | 2  | b     |               | 2  | b     |
+    | 3  | c     |               | 4  | x     |
+    | 4  | c     |               | 5  | f     |
+    +----+-------+               +----+-------+
+
+    sample output:
+
+    Output: 
+    +----------+-----------+
+    | id       |name       |
+    +----------+-----------+
+    | 3        | new in src|
+    | 4        | mismatch  |
+    | 5        | new in tgt|
+    +----------+-----------+
+    ```
+
+    ```sql
+    with cte as
+    (
+      select
+        aa.id as a_id
+        , aa.name as a_name
+        , bb.id as b_id
+        , bb.name as b_name
+      from
+        public.src aa
+      full join public.tgt bb on aa.id = bb.id
+    ),
+    conditions as
+    (
+      select
+        a_id
+        , b_id
+        , case
+          when b_id is null then 'new in src'
+          when a_id is null then 'new in tgt'
+          when a_id = b_id and a_name <> b_name then 'mismatch'
+        end as result
+      from cte
+    )
+    select
+      coalesce(a_id, b_id) as id
+      , result
+    from conditions
+    where 1=1
+      and result is not null ;
+    ```
   
   + cross join
 
@@ -723,7 +780,7 @@ select * from pg_catalog.pg_indexes pi2 ;
     select
       emp_name
       , salary
-      , lag(salary,2,0) over(partition by dep order by emp_id) as seq  -- 1st:col, 2nd:how many previous row, 3rd: if null then 0 or custom val
+      , lag(salary,2,0) over(partition by dep order by emp_id) as seq  -- 1st:col, 2nd:how many previous row, 3rd: if null then 0 or default val
     ```
   
   + lead: ```next record```
