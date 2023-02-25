@@ -12,6 +12,7 @@
 + [DQL](#dql)
 + [View And Materialized view](#view_and_materialized_view)
 + [Normalization](#normalization)
++ [Keys](#keys)
 
 # server-info
 
@@ -959,7 +960,7 @@ select * from pg_catalog.pg_indexes pi2 ;
 
 + types : ```1NF, 2NF, 3NF, BCNF, 4NF, 5NF```
 
-+ 1NF
++ **<span style="color: orange">1NF</span>**
   + Each col should have atomic values
   + A col must be with individual type, not mixed
   + Each col should have unique name
@@ -967,29 +968,39 @@ select * from pg_catalog.pg_indexes pi2 ;
 
 <br>
 
-+ 2NF
++ **<span style="color: orange">2NF</span>**
   + It sould be in 1NF
   + Each non-key column is dependent on the entire primary key. This means that if a table has a **composite primary key(primary key of 1st table = primary key of 2nd table + primary key of 3rd table)**, each non-key column should depend on the entire composite key, not just part of it. **<span style="color: red">In essence, no partial dependency</span>.**
 
 <br>
 
-+ 3NF
++ **<span style="color: orange">3NF</span>**
   + It sould be in 2NF
   + No transitive dependency (When any column is dependent on non primary key column)
 
 <br>
 
-+ BCNF (Boyce-codd normal form)
++ **<span style="color: orange">BCNF (Boyce-codd normal form)</span>**
   + There should be no dependencies between non-superkey attributes
 
 <br>
 
-+ 4NF
++ **<span style="color: orange">4NF</span>**
   + It sould be in BCNF
   + It should not have multi-values dependency ( if a table has a composite key, each non-key attribute should depend only on the entire composite key, not just part of it)
 
 <br>
 
-+ 5NF/PJNF (project join normal form)
++ **<span style="color: orange">5NF/PJNF (project join normal form)</span>**
   + It sould be in 4NF
   + It has no join dependencies (all non-key attributes should be fully dependent on the primary key, and not on any other non-key attributes)
+
+# keys
+
++ super key : An attribute or set of attribute is used to identify a row of data.
++ candidate key: subset of super key
++ primary key: uniquely identifier
++ foreign key: it's used to create relationship with another table.
++ composite key: any key with more than one attribute
++ compound key: any composite key has at least one foreign key attribute.
++ surrogate key: If a table has no relationship or unique identifier then we create primary key. it's called surrogate key.
