@@ -454,6 +454,58 @@ select * from pg_catalog.pg_indexes pi2 ;
     from tableName1 as t1 
     right join tableName2 as t2 on t1.colName = t2.colName ;
     ```
+
+    Ex (inner, left, right)
+
+    ```text
+    sample input:
+
+    src table:                   tgt table:
+    +----+-------+               +----+-------+             
+    | id | name  |               | id | name  |
+    +----+-------+               +----+-------+
+    | 1  | a     |               | 1  | a     |
+    | 2  | b     |               | 2  | b     |
+    | 3  | c     |               | 4  | x     |
+    | 4  | c     |               | 5  | f     |
+    +----+-------+               +----+-------+
+
+    sample output:
+
+    Output: 
+    +----------+-----------+
+    | id       |name       |
+    +----------+-----------+
+    | 3        | new in src|
+    | 4        | mismatch  |
+    | 5        | new in tgt|
+    +----------+-----------+
+    ```
+
+    ```sql
+    select
+      aa.id
+      , 'mismatch' as comment
+    from
+      public.src aa
+    join public.tgt bb on aa.id = bb.id and aa.name <> bb.name
+    union 
+    select
+      aa.id
+      , 'new in src' as comment
+    from
+      public.src aa
+    left join public.tgt bb on aa.id = bb.id
+    where bb.id is null
+    union 
+    select
+      bb.id
+      , 'new in tgt' as comment
+    from
+      public.src aa
+    right join public.tgt bb on aa.id = bb.id
+    where aa.id is null ;
+    ```
   
   + full join / full outer join
 
@@ -522,6 +574,31 @@ select * from pg_catalog.pg_indexes pi2 ;
     from conditions
     where 1=1
       and result is not null ;
+    
+    -- or,
+
+    select
+      aa.id
+      , 'mismatch' as comment
+    from
+      public.src aa
+    join public.tgt bb on aa.id = bb.id and aa.name <> bb.name
+    union 
+    select
+      aa.id
+      , 'new in src' as comment
+    from
+      public.src aa
+    left join public.tgt bb on aa.id = bb.id
+    where bb.id is null
+    union 
+    select
+      bb.id
+      , 'new in tgt' as comment
+    from
+      public.src aa
+    right join public.tgt bb on aa.id = bb.id
+    where aa.id is null ;
     ```
   
   + cross join
