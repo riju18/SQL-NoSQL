@@ -574,31 +574,6 @@ select * from pg_catalog.pg_indexes pi2 ;
     from conditions
     where 1=1
       and result is not null ;
-    
-    -- or,
-
-    select
-      aa.id
-      , 'mismatch' as comment
-    from
-      public.src aa
-    join public.tgt bb on aa.id = bb.id and aa.name <> bb.name
-    union 
-    select
-      aa.id
-      , 'new in src' as comment
-    from
-      public.src aa
-    left join public.tgt bb on aa.id = bb.id
-    where bb.id is null
-    union 
-    select
-      bb.id
-      , 'new in tgt' as comment
-    from
-      public.src aa
-    right join public.tgt bb on aa.id = bb.id
-    where aa.id is null ;
     ```
   
   + cross join
