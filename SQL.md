@@ -238,7 +238,7 @@ select * from pg_catalog.pg_indexes pi2 ;
     update child_table set column_name = 'value' -- update child table data
     ```
 
-+ <<span style="color: yellow">>delete table</span>
++ <span style="color: yellow">delete table</span>
 
     ```sql
     drop table parent_table cascade;  -- drop parent_table
