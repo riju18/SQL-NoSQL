@@ -272,11 +272,11 @@ select * from pg_catalog.pg_indexes pi2 ;
   LANGUAGE plpgsql
   AS $function$
   begin
-    if (extract(year from new.parentTabelCol) >= 2015 and extract(year from new.parentTabelCol) < 2016) then
+    if (extract(year from new.parentTableCol) >= 2015 and extract(year from new.parentTableCol) < 2016) then
     insert into public.childTable1 values (new.*) ;
-    elsif (extract(year from new.parentTabelCol) >= 2016 and extract(year from new.parentTabelCol) < 2017) then
+    elsif (extract(year from new.parentTableCol) >= 2016 and extract(year from new.parentTableCol) < 2017) then
     insert into public.childTable2 values (new.*) ;
-    elsif (extract(year from new.parentTabelCol) >= 2017 and extract(year from new.parentTabelCol) < 2018) then
+    elsif (extract(year from new.parentTableCol) >= 2017 and extract(year from new.parentTableCol) < 2018) then
     insert into public.childTable3 values (new.*) ;
     else
     raise exception 'date must be less than 2018' ;
@@ -289,7 +289,7 @@ select * from pg_catalog.pg_indexes pi2 ;
 + <span style="color: yellow">trigger</span>
 
   ```sql
-  create trigger triggerName before insert on public.parentTabel for each row execute procedure public.fn_name() ;
+  create trigger triggerName before insert on public.childTable for each row execute procedure public.fn_name() ;
   ```
 
 + <span style="color: yellow">copy</span>
@@ -996,6 +996,56 @@ select * from pg_catalog.pg_indexes pi2 ;
     from
       tableName
     ```
+  
+  + Ex
+    + cumulative sum
+
+      ```text
+        sample input:
+        
+        activity
+
+        +----+--------------+
+        | player_id | game  | 
+        +-----------+-------+
+        | 1         | 5     |
+        | 1         | 6     |
+        | 2         | 1     |
+        | 3         | 0     |
+        | 3         | 5     |
+        +-----------+-------+
+
+        sample output:
+
+        Output: 
+        +----+--------------+
+        | player_id | game  | 
+        +-----------+-------+
+        | 1         | 5     |
+        | 1         | 11    |
+        | 2         | 1     |
+        | 3         | 0     |
+        | 3         | 5     |
+        +-----------+-------+
+        ```
+
+        ```sql
+        select
+          player_id
+          , sum(game) over(partition by player_id order by game) as game
+        from
+          public.activity 
+        order by player_id ;
+
+        -- or,
+        
+        select
+          player_id
+          , lag(game,1,0) over(partition by player_id order by game) + game as game
+        from
+          public.activity 
+        order by player_id ;
+        ```
 
 # view_and_materialized_view
 
