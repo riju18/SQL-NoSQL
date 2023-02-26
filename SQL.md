@@ -11,8 +11,9 @@
 + [DDL](#ddl)
 + [DQL](#dql)
 + [View And Materialized view](#view_and_materialized_view)
-+ [Normalization](#normalization)
 + [Keys](#keys)
++ [Normalization](#normalization)
++ [Data Modeling](#data_modeling)
 
 # server-info
 
@@ -1000,7 +1001,7 @@ select * from pg_catalog.pg_indexes pi2 ;
 
 + view
 
-  + points:
+  + points
     1. It always provide latest data.
     2. It doesn't store data.
     3. Can't change the col name in src code after creating view.
@@ -1113,3 +1114,15 @@ select * from pg_catalog.pg_indexes pi2 ;
 + composite key: any key with more than one attribute
 + compound key: any composite key has at least one foreign key attribute.
 + surrogate key: If a table has no relationship or unique identifier then we create primary key. it's called surrogate key.
+
+# data_modeling
+
++ **<span style="color:orange">dimension</span>**
++ **<span style="color:orange">fact : dimension key + measure</span>**
++ **<span style="color:orange">schema</span>**
+  + **<span style="color:yellow">star</span>** : It's one dimensional table contains most sets of attributes. One fact table related multiple dimension tables.
+    + [docs](https://tinyurl.com/ys25xhdz)
+  + **<span style="color:yellow">snowflake</span>** : The dimension tables related to the fact table may have another dimension table.
+    + [docs](https://tinyurl.com/y854rrz3)
+  + **<span style="color:yellow">fact constellation(galaxy)</span>** : It has more than 1 fact table.
+    + [docs](https://tinyurl.com/56uz82a4)
