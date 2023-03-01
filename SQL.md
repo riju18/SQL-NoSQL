@@ -56,14 +56,20 @@
 
 + **stop server**
 
+  + <span style='color: orange'>**Types of shutdown**</span>
+    + <span style='color: yellow'>**smart**</span> : It disallows new connection but lets existing sessions end the transaction normally. It shutdows after all session terminated.
+    + <span style='color: yellow'>**fast**</span> : It disallows new connection and abort their connection & exits gracefully(when the server restarts it doesn't need recover data)
+    + <span style='color: yellow'>**immediate**</span> : Quits/aborts with proper shutdown which lead to recovery on next startup.
+
     ```psql
     pg_ctl stop;
     ```
 
-+ **restart server**
++ **restart and reload server**
 
     ```psql
     pg_ctl restart;
+    pg_ctl reload;
     ```
 
 + **conf**
