@@ -1,3 +1,4 @@
++ [Page](#page)
 + [Server Info](#server-info)
 + [Definition](#definition)
 + [DB Info](#db-info)
@@ -14,6 +15,12 @@
 + [Keys](#keys)
 + [Normalization](#normalization)
 + [Data Modeling](#data_modeling)
+
+# page
+
++ page is a smallest unit of data stroage
++ every table & index is stored as an array of pages of fixed size
++ By default, in PostgreSQL page is 8kb
 
 # server-info
 
