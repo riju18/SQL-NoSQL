@@ -15,6 +15,7 @@
 + [Keys](#keys)
 + [Normalization](#normalization)
 + [Data Modeling](#data_modeling)
++ [CMD](#cmd)
 
 # page
 
@@ -1189,3 +1190,11 @@ select * from pg_catalog.pg_indexes pi2 ;
     + [docs](https://tinyurl.com/y854rrz3)
   + **<span style="color:yellow">fact constellation(galaxy)</span>** : It has more than 1 fact table.
     + [docs](https://tinyurl.com/56uz82a4)
+
+# cmd
+
++ data upload from file to table
+  
+  ```text
+  PGPASSWORD=password psql -h 127.0.0.1 -U dbUser -d DBName -c "\copy schemaName.tableName(colName1, colName2, ..., colName_n) from '/filePath/fileName.csv' header delimeter ',' csv"
+  ```
