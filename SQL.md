@@ -6,13 +6,13 @@
 + [User](#user)
 + [Schema](#schema)
 + [Catelog](#pg_catelog)
-+ [Prvilege](#prvilege)
++ [Previlege](#previlege)
 + [Inheritance, Partitioning, copy](#inheritance_partitioning_copy)
 + [Backup](#backup)
 + [DDL](#ddl)
 + [DQL](#dql)
 + [View And Materialized view](#view_and_materialized_view)
-+ [Keys](#keys)
++ [Keys/Constraints](#keys)
 + [Normalization](#normalization)
 + [Data Modeling](#data_modeling)
 + [CMD](#cmd)
@@ -221,7 +221,7 @@ select * from pg_catalog.pg_settings ps ;
 select * from pg_catalog.pg_indexes pi2 ;
 ```
 
-# prvilege
+# previlege
 
 + [previlege](https://tableplus.com/blog/2018/04/postgresql-how-to-grant-access-to-users.html)
 
@@ -1173,8 +1173,47 @@ select * from pg_catalog.pg_indexes pi2 ;
 
 + super key : An attribute or set of attribute is used to identify a row of data.
 + candidate key: subset of super key
-+ primary key: uniquely identifier
++ primary key: A table must have only one primary key column.
+
+  ```sql
+  -- while creating table
+  CREATE TABLE tableName (
+  col1 serial4 NOT NULL,
+  col2 varchar(45) NOT NULL,
+  col3 varchar(45) NOT NULL,
+  col4 timestamp NOT NULL DEFAULT now(),
+  CONSTRAINT col1_pkey PRIMARY KEY (col1)
+  );
+
+  -- while updating table
+  alter table tableName 
+  add constraint col_pk primary key(colName) ;
+
+  ```
+
++ unique key: A table may have multiple unique column.
+
+  ```sql
+  alter table tableName
+  add constraint col2_unique unique(colName);
+
+  ```
+
 + foreign key: it's used to create relationship with another table.
+
+  ```sql
+  alter table tableName
+  add constraint constraint_name foreign key(colName)
+  references primary_table(colName);
+  ```
+
++ check constraint:
+
+  ```sql
+  alter table tableName
+  add constraint constraint_name check(id > 1);
+  ```
+
 + composite key: any key with more than one attribute
 + compound key: any composite key has at least one foreign key attribute.
 + surrogate key: If a table has no relationship or unique identifier then we create primary key. it's called surrogate key.
