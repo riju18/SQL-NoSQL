@@ -1064,63 +1064,60 @@ select * from pg_catalog.pg_indexes pi2 ;
 # view_and_materialized_view
 
 + view
+  1. It always provide latest data.
+  2. It doesn't store data.
+  3. Can't change the col name in src code after creating view.
+  4. Can't change the order (have to add new col at the end).
+  5. Can't change the data type.
 
-  + points
-    1. It always provide latest data.
-    2. It doesn't store data.
-    3. Can't change the col name in src code after creating view.
-    4. Can't change the order (have to add new col at the end).
-    5. Can't change the data type.
+    ```sql
+    create or replace view viewName
+    as
+    select
+      id
+      , avg(val)
+      , count(1)
+    from tableName
+    group by 1 ;
 
-  ```sql
-  create or replace view viewName
-  as
-  select
-    id
-    , avg(val)
-    , count(1)
-  from tableName
-  group by 1 ;
+    select * from viewName ;
 
-  select * from viewName ;
+    -- with check option
+    create or replace view viewName
+    as
+    select
+      id
+      , salary
+      , dept
+    from tableName
+    where dept = 1
+    with check option ;
 
-  -- with check option
-  create or replace view viewName
-  as
-  select
-    id
-    , salary
-    , dept
-  from tableName
-  where dept = 1
-  with check option ;
-
-  /*
-  view created by check option
-  will restrict inserting unnecessary/wrong data. 
-  */
-  insert into viewName
-  values (1, 10000, 2) ;
-  ```
+    /*
+    view created by check option
+    will restrict inserting unnecessary/wrong data. 
+    */
+    insert into viewName
+    values (1, 10000, 2) ;
+    ```
 
 + materialized view
 
-  + points:
-    1. It doesn't update automatically.
-    2. It stores data
+  1. It doesn't update automatically.
+  2. It stores data
 
-  ```sql
-  create or replace materialized view viewName
-  as
-  select
-    id
-    , avg(val)
-    , count(1)
-  from tableName
-  group by 1 ;
+    ```sql
+    create or replace materialized view viewName
+    as
+    select
+      id
+      , avg(val)
+      , count(1)
+    from tableName
+    group by 1 ;
 
-  select * from viewName ;
-  ```
+    select * from viewName ;
+    ```
 
   + update materialized view data
 
