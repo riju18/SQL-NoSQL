@@ -159,22 +159,23 @@
 
 + list of user
 
-```psql
-\du
-```
+  ```psql
+  \du
+  ```
 
 + create/drop user
 
-```psql
-create user username login password 'password';
-drop user joe;
-```
+  ```sql
+  create user username login password 'password';  -- new user
+  drop user joe;  -- delete user
+  alter user username with password 'password';  -- update user password
+  ```
 
 + revoke connection (Normal user can't connect to DB)
 
-```psql
-revoke connect on database dbName from public;
-```
+  ```sql
+  revoke connect on database dbName from public;
+  ```
 
 # schema
 
@@ -734,7 +735,53 @@ select * from pg_catalog.pg_indexes pi2 ;
     from 
       tableName ;
     ```
+
++ set
+  + must be same size of columns
+  + union
+
+    ```sql
+    -- without duplicate
+    select col1, col2 from tableA
+    union
+    select col1, col2 from tableB
+    ```
+
+  + union all
+
+    ```sql
+    -- with duplicate
+    select col1, col2 from tableA
+    union all
+    select col1, col2 from tableB
+    ```
   
+  + intersect
+
+    ```sql
+    -- distinct rows that appeared in both input query
+    select col1, col2 from tableA
+    intersect
+    select col1, col2 from tableB
+    ```
+
+  + except
+
+    ```sql
+    -- rows that appeared in first query but not in second query
+    select col1, col2 from tableA
+    except
+    select col1, col2 from tableB
+    ```
+  
+  + precedence
+
+    ```mermaid
+    flowchart LR
+
+    1.parentheses--> 2.intersect--> 3.union/except
+    ```
+
 + window fn
 
   ```row_number,rank,dense_rank,lead,lag,ntile,nth_value, first_value, last_value```
