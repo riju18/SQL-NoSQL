@@ -433,6 +433,42 @@ select * from pg_catalog.pg_indexes pi2 ;
     and colName1 ~ 'Bi' ;
   ```
 
++ filter
+
+    ```text
+    sample input:
+
+    titanic table:         
+    +----------+--------+                          
+    | survived | pclass |             
+    +----------+--------+             
+    | 0        | 3      |             
+    | 1        | 1      |             
+    | 1        | 2      |             
+    +----------+--------+               
+
+    sample output:
+
+    Output: 
+    +----------+------------+-------------+----------+                          
+    | survived | first_class|second_class |third_class|          
+    +----------+------------+-------------+----------+             
+    | 0        | 11         | 6           | 42             
+    | 1        | 10         | 12          | 19                    
+    +----------+------------+-------------+----------+
+    ```
+
+    ```sql
+    select
+      survived
+      , count(1) filter(where pclass=1) as first_class
+      , count(1) filter(where pclass=2) as second_class
+      , count(1) filter(where pclass=3) as third_class
+    from titanic
+    group by 1
+    ;
+    ```
+
 + join
 
   + inner join/join
@@ -784,7 +820,11 @@ select * from pg_catalog.pg_indexes pi2 ;
 
 + window fn
 
-  ```row_number,rank,dense_rank,lead,lag,ntile,nth_value, first_value, last_value```
+  ```text
+  # ranking fn: row_number,rank,dense_rank,ntile
+  # offset window fn: lead,lag,first_value, last_value
+  # others: nth_value
+  ```
 
   + row_number
 
@@ -913,7 +953,7 @@ select * from pg_catalog.pg_indexes pi2 ;
       , lead(salary,2,0) over(partition by dep order by emp_id) as seq  -- 1st:col, 2nd:how many previous row, 3rd: if null then 0 or custom val
     ```
   
-  + first_value
+  + first_value : It returns the 1st row
 
     ```sql
     select
@@ -925,7 +965,7 @@ select * from pg_catalog.pg_indexes pi2 ;
       tableName ;
     ```
   
-  + last_value
+  + last_value : It returns the last row
 
     ```sql
     select
