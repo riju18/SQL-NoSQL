@@ -10,6 +10,7 @@
 + [Inheritance, Partitioning, copy](#inheritance_partitioning_copy)
 + [Backup](#backup)
 + [DDL](#ddl)
++ [DML](#dml)
 + [DQL](#dql)
 + [View And Materialized view](#view_and_materialized_view)
 + [Keys/Constraints](#keys)
@@ -343,6 +344,25 @@ select * from pg_catalog.pg_indexes pi2 ;
     ```sql
     ALTER TABLE IF EXISTS tableName RENAME TO newTableName ;
     ```
+
+# dml
+
++ upsert (update & insert)
+
+  ```sql
+  merge into target_table as tgt 
+  using source_table as src
+    on src.id = tgt.id
+  when matched then 
+    update set
+      tgt_col1 = src.col1,
+      tgt_col2 = src.col2,
+      tgt_col3 = src.col3
+  when not matched then 
+    insert (col1, col2, col3, col4)
+    values (src.col1, src.col2, src.col3, src.col4)
+  ;  
+  ```
 
 # dql
 
