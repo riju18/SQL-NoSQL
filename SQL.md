@@ -8,7 +8,7 @@
 + [Catelog](#pg_catelog)
 + [Previlege](#previlege)
 + [Inheritance, Partitioning, copy](#inheritance_partitioning_copy)
-+ [Backup](#backup)
++ [Backup & Restore](#backup-restore)
 + [DDL](#ddl)
 + [DML](#dml)
 + [DQL](#dql)
@@ -326,9 +326,40 @@ select * from pg_catalog.pg_indexes pi2 ;
     select * from src_table where 1=2;
     ```
 
-# backup
+# backup-restore
 
-+ coming soon
++ **restore/import**
+
+  + import DB as **tar** file
+
+    ```sh
+    PGPASSWORD=password pg_restore -c -U dbUser -d dbName path/fileName.tar
+    ```
+
+    + If authertication error occurs like **peer authentication**
+      + find **pg_hba.conf**
+
+        ```sh
+        locate pg_hba.conf
+        ```
+
+      + edit the line
+
+        ```text
+        locate  all postgres  peer 
+        ```
+
+        to
+
+        ```text
+        locate  all postgres  md5 
+        ```
+
+      + restart the postgres server
+
+        ```sh
+        sudo systemctl restart postgresql
+        ```
 
 # ddl
 
