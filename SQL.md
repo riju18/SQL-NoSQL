@@ -1206,6 +1206,10 @@ select * from pg_catalog.pg_indexes pi2 ;
     */
     insert into viewName
     values (1, 10000, 2) ;
+
+    -- update view
+    alter view viewName rename column to newColName;
+    alter view viewName rename to newViewName;
     ```
 
 + materialized view
