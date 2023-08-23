@@ -872,9 +872,9 @@ select * from pg_catalog.pg_indexes pi2 ;
 + window fn
 
   ```text
-  # ranking fn: row_number,rank,dense_rank,ntile
-  # offset window fn: lead,lag,first_value, last_value
-  # others: nth_value
+  1. ranking fn: row_number,rank,dense_rank,ntile
+  2. offset window fn: lead,lag,first_value, last_value
+  3. others: nth_value
   ```
 
   + row_number
@@ -1049,7 +1049,7 @@ select * from pg_catalog.pg_indexes pi2 ;
        colName1  
       , colName2 
       , colName3
-      ntile(3) over(partition by colName order by "ProductPrice" desc) as bucket
+      , ntile(3) over(partition by colName order by "ProductPrice" desc) as bucket
     from
       tableName ;
 
@@ -1058,7 +1058,7 @@ select * from pg_catalog.pg_indexes pi2 ;
        colName1  
       , colName2 
       , colName3
-      ntile(3) over(order by "ProductPrice" desc) as bucket
+      , ntile(3) over(order by "ProductPrice" desc) as bucket
     from
       tableName ;
     ```
