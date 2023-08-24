@@ -17,6 +17,7 @@
 + [Normalization](#normalization)
 + [Data Modeling](#data_modeling)
 + [CMD](#cmd)
++ [SQL practice](#tricky-sql)
 
 # page
 
@@ -1375,4 +1376,109 @@ select * from pg_catalog.pg_indexes pi2 ;
   
   ```text
   PGPASSWORD=password psql -h 127.0.0.1 -U dbUser -d DBName -c "\copy schemaName.tableName(colName1, colName2, ..., colName_n) from '/filePath/fileName.csv' header delimeter ',' csv"
+  ```
+
+# tricky-sql
+
++ return only brand which amount is incresing each year
+
+  ```text
+  sample input:
+  
+  activity
+
+  +--------------+--------+-------+
+  | year         | brand  | amount| 
+  +--------------+--------+-------+
+  | 2018         | apple     | 45 |
+  | 2019         | apple     | 35 |
+  | 2020         | apple     | 75 |
+  | 2018         | sam       | 15 |
+  | 2019         | sam       | 20 |
+  | 2020         | sam       | 25 |
+  | 2018         | nokia     | 21 |
+  | 2019         | nokia     | 17 |
+  | 2020         | nokia     | 14 |
+  +--------------+-----------+----+
+
+  sample output:
+
+  Output: 
+  +-----------+
+  | brand     |
+  +-----------+
+  | sam       |
+  +-----------+
+  ```
+
+  ```sql
+  -- solution:
+  with cte as(
+    select
+      *
+      , case when amount < lead (amount, 1, amount+1) over(partition by brand order by year) then 1 else 0 end as f
+    from
+    tableName 
+  )
+  select
+    distinct brand
+  from cte 
+  where 1=1
+    and brand not in (select brand from cte where f=0)
+  ;
+  ```
+
++ [billing](https://www.youtube.com/watch?v=jS5_hjFgfzA)
++ current balance >= 1000
+
+  ```text
+    sample input:
+    ============
+    table: account_balance
+    ======================
+    
+    +----------+-----------------+-------------+-------------------
+    account_no | transaction_date| debit_credit| transaction_amount
+    +----------+-----------------+-------------+-------------------
+    acc_1      | 2022-01-20      |credit       | 100
+    acc_1      | 2022-01-21      |credit       | 500
+    acc_1      | 2022-01-22      |credit       | 300
+    acc_1      | 2022-01-23      |credit       | 200
+    acc_2      | 2022-01-20      |credit       | 500
+    acc_2      | 2022-01-21      |credit       | 1,100
+    acc_2      | 2022-01-22      |debit        | 1,000
+    acc_3      | 2022-01-20      |credit       | 1,000
+    acc_4      | 2022-01-20      |credit       | 1,500
+    acc_4      | 2022-01-21      |debit        | 500
+    acc_5      | 2022-01-20      |credit       | 900 
+    +----------+-----------------+-------------+-------------------
+  ```
+
+  ```sql
+  with cte as (  -- 1) mark debit as neg
+    select
+      *
+      , case when debit_credit = 'debit' then transaction_amount*-1 else transaction_amount end as cal
+    from
+      account_balance 
+  ),
+  resfined as (  -- 2) calculate by acc_id and year wise
+    select
+      *
+      , sum(cal) over(partition by account_no order by transaction_date) as res
+    from cte
+  ),
+  result as (  -- 3) last date balance
+    select
+      *
+      , row_number () over(partition by account_no order by transaction_date desc) as r
+    from resfined
+  )
+  select  -- 4) check >=1000
+    account_no
+  from result
+  where 1=1
+    and r = 1
+    and res >= 1000
+  ;
   ```
