@@ -1380,7 +1380,7 @@ select * from pg_catalog.pg_indexes pi2 ;
 
 # tricky-sql
 
-+ return only brand which amount is incresing each year
++ **return only brand which amount is incresing each year**
 
   ```text
   sample input:
@@ -1428,8 +1428,8 @@ select * from pg_catalog.pg_indexes pi2 ;
   ;
   ```
 
-+ [billing](https://www.youtube.com/watch?v=jS5_hjFgfzA)
-+ current balance >= 1000
++ [**billing**](https://www.youtube.com/watch?v=jS5_hjFgfzA)
++ **current balance >= 1000**
 
   ```text
     sample input:
@@ -1438,19 +1438,19 @@ select * from pg_catalog.pg_indexes pi2 ;
     ======================
     
     +----------+-----------------+-------------+-------------------
-    account_no | transaction_date| debit_credit| transaction_amount
+    account_no | transaction_date| debit_credit| transaction_amount|
     +----------+-----------------+-------------+-------------------
-    acc_1      | 2022-01-20      |credit       | 100
-    acc_1      | 2022-01-21      |credit       | 500
-    acc_1      | 2022-01-22      |credit       | 300
-    acc_1      | 2022-01-23      |credit       | 200
-    acc_2      | 2022-01-20      |credit       | 500
-    acc_2      | 2022-01-21      |credit       | 1,100
-    acc_2      | 2022-01-22      |debit        | 1,000
-    acc_3      | 2022-01-20      |credit       | 1,000
-    acc_4      | 2022-01-20      |credit       | 1,500
-    acc_4      | 2022-01-21      |debit        | 500
-    acc_5      | 2022-01-20      |credit       | 900 
+    acc_1      | 2022-01-20      |credit       | 100              | 
+    acc_1      | 2022-01-21      |credit       | 500              | 
+    acc_1      | 2022-01-22      |credit       | 300              | 
+    acc_1      | 2022-01-23      |credit       | 200              | 
+    acc_2      | 2022-01-20      |credit       | 500              | 
+    acc_2      | 2022-01-21      |credit       | 1,100            | 
+    acc_2      | 2022-01-22      |debit        | 1,000            | 
+    acc_3      | 2022-01-20      |credit       | 1,000            | 
+    acc_4      | 2022-01-20      |credit       | 1,500            | 
+    acc_4      | 2022-01-21      |debit        | 500              | 
+    acc_5      | 2022-01-20      |credit       | 900              |  
     +----------+-----------------+-------------+-------------------
   ```
 
@@ -1481,4 +1481,82 @@ select * from pg_catalog.pg_indexes pi2 ;
     and r = 1
     and res >= 1000
   ;
+  ```
+
++ [**job vaccancy**](https://www.youtube.com/watch?v=HiscSRv7zWk)
+
+    ```text
+    sample input:
+    ============
+    table: job_positions
+    ======================
+    
+    +---+-----------------+---------+-----------+-------------------
+    id  | title           | groups  | levels | payscale  | totalpost
+    +---+-----------------+---------+--------+----------------------
+    1   | General manager | A       | l-15   | 10000     | 1  
+    2   | Manager         | B       | l-14  | 9000       | 5
+    3   | Asst. Manager   | C       |l-13    | 8000      | 10
+    +---+-------+---------+---------+--------+----------------------
+
+     table: job_employees
+    ======================
+    +---+-------------------+---------+
+    id  | title             | groups  |
+    +---+-------------------+---------+
+    1   | John Smith        |   1
+    2   | Jane Doe          |   2
+    3   | Michael Brown     |   2
+    4   | Emily Johnson     |   2
+    5   | William Lee       |   3
+    6   | Jessica Clark     |   3
+    7   | Christopher Harris|   3
+    8   | Olivia Wilson     |   3
+    9   | Daniel Martinez   |   3
+    10  | Sophia Miller     |   3
+    +---+-------------------+---------+
+
+    output:
+    ======
+
+    +---------------+-----------------+---------+------------------+
+    title           | groups  | levels| payscale| employee_name  
+    +---------------+-----------------+---------+------------------+
+    General manager | A       | l-15  | 10000   | John Smith
+    Manager         | B       | l-14  | 9000    | Jane Doe
+    Manager         | B       | l-14  | 9000    | Michael Brown
+    Manager         | B       | l-14  | 9000    | Emily Johnson
+    Manager         | B       | l-14  | 9000    | Vacant
+    Manager         | B       | l-14  | 9000    | Vacant
+    Asst. Manager   | C       | l-13  | 8000    | William Lee
+    Asst. Manager   | C       | l-13  | 8000    | Jessica Clark
+    Asst. Manager   | C       | l-13  | 8000    | Christopher Harris
+    Asst. Manager   | C       | l-13  | 8000    | Olivia Wilson
+    Asst. Manager   | C       | l-13  | 8000    | Daniel Martinez
+    Asst. Manager   | C       | l-13  | 8000    | Sophia Miller
+    Asst. Manager   | C       | l-13  | 8000    | Vacant
+    Asst. Manager   | C       | l-13  | 8000    | Vacant
+    Asst. Manager   | C       | l-13  | 8000    | Vacant
+    Asst. Manager   | C       | l-13  | 8000    | Vacant
+    +---------------+-----------------+---------+------------------+
+  ```
+
+  ```sql
+  select
+    p.title,
+    p.groups,
+    p.levels,
+    p.payscale,
+    coalesce(e.name, 'Vacant') as employee_name
+  from
+    job_positions p
+  cross join generate_series(1, totalpost)
+  left join 
+  (
+    select
+      *,
+      row_number() over(partition by position_id order by id) as rn
+    from
+      job_employees
+  ) e on e.rn = generate_series and e.position_id = p.id ;
   ```
