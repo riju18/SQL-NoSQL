@@ -330,6 +330,15 @@ select * from pg_catalog.pg_indexes pi2 ;
 # backup-restore
 
 + **restore/import**
+  + export DB as **tar** file
+
+    ```sh
+    PGPASSWORD=password pg_dump -U your_username -d your_database_name -F t -f output_file.tar
+    
+    -- F : custom format
+    t    : tar
+    -f   : output format
+    ```
 
   + import DB as **tar** file
 
@@ -361,6 +370,18 @@ select * from pg_catalog.pg_indexes pi2 ;
         ```sh
         sudo systemctl restart postgresql
         ```
+  
+  + import csv file as table
+
+    ```sh
+    PGPASSWORD=password psql -h 127.0.0.1 -U your_username -d database_name -c "\copy table_name FROM 'fileName.csv' WITH CSV HEADER"
+    ```
+  
+  + export data from table as csv
+
+    ```sh
+    PGPASSWORD=password psql -h 127.0.0.1 -U your_username -d database_name -c "\copy table_name TO 'fileName.csv' WITH CSV HEADER"
+    ```
 
 # ddl
 
@@ -1369,14 +1390,6 @@ select * from pg_catalog.pg_indexes pi2 ;
     + [docs](https://tinyurl.com/y854rrz3)
   + **<span style="color:yellow">fact constellation(galaxy)</span>** : It has more than 1 fact table.
     + [docs](https://tinyurl.com/56uz82a4)
-
-# cmd
-
-+ data upload from file to table
-  
-  ```text
-  PGPASSWORD=password psql -h 127.0.0.1 -U dbUser -d DBName -c "\copy schemaName.tableName(colName1, colName2, ..., colName_n) from '/filePath/fileName.csv' header delimeter ',' csv"
-  ```
 
 # tricky-sql
 
