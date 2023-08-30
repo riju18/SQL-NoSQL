@@ -16,7 +16,6 @@
 + [Keys/Constraints](#keys)
 + [Normalization](#normalization)
 + [Data Modeling](#data_modeling)
-+ [CMD](#cmd)
 + [SQL practice](#tricky-sql)
 
 # page
@@ -1381,14 +1380,14 @@ select * from pg_catalog.pg_indexes pi2 ;
 
 # data_modeling
 
-+ **<span style="color:orange">dimension</span>**
-+ **<span style="color:orange">fact : dimension key + measure</span>**
-+ **<span style="color:orange">schema</span>**
-  + **<span style="color:yellow">star</span>** : It's one dimensional table contains most sets of attributes. One fact table related multiple dimension tables.
++ **dimension**
++ **fact : dimension key + measure**
++ **schema**
+  + **star** : It's one dimensional table contains most sets of attributes. One fact table related multiple dimension tables.
     + [docs](https://tinyurl.com/ys25xhdz)
-  + **<span style="color:yellow">snowflake</span>** : The dimension tables related to the fact table may have another dimension table.
+  + **snowflake** : The dimension tables related to the fact table may have another dimension table.
     + [docs](https://tinyurl.com/y854rrz3)
-  + **<span style="color:yellow">fact constellation(galaxy)</span>** : It has more than 1 fact table.
+  + **fact constellation(galaxy)** : It has more than 1 fact table.
     + [docs](https://tinyurl.com/56uz82a4)
 
 # tricky-sql
@@ -1572,4 +1571,54 @@ select * from pg_catalog.pg_indexes pi2 ;
     from
       job_employees
   ) e on e.rn = generate_series and e.position_id = p.id ;
+  ```
+
++ **interchange the adjacent name**
+
+    ```text
+    sample input:
+    ============
+
+    table: students
+    ======================
+    
+    +---+-----------------+
+    id  | name           |
+    +---+-----------------+
+    1   |  James
+    2   |  Michael
+    3   |  George
+    4   |  Stewart
+    5   |  Robin
+    +---+-----------------
+
+    output:
+    ======
+
+    table: job_employees
+    ======================
+    +---+-------------+----------+
+    id  | name        | new_name |
+    +---+-------------+----------+
+    1   | John        |  Smith
+    1   |  James     |  Michael
+    2   |  Michael   |  James
+    3   |  George     |  Stewart
+    4   |  Stewart   |  George
+    5   |  Robin     |  Robin
+    +---+--------------+---------+
+  ```
+
+  ```sql
+  select
+    id,
+    name,
+    case
+      when id%2 <> 0 then lead(student_name, 1, student_name) over(
+      order by id)
+      when id%2 = 0 then lag(student_name) over(
+      order by id)
+    end as new_name
+  from
+    students;
   ```
