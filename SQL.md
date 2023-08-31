@@ -399,7 +399,7 @@ select * from pg_catalog.pg_indexes pi2 ;
 
 # dml
 
-+ upsert (update & insert)
++ **upsert (update & insert)**
 
   ```sql
   merge into target_table as tgt 
@@ -414,6 +414,32 @@ select * from pg_catalog.pg_indexes pi2 ;
     insert (col1, col2, col3, col4)
     values (src.col1, src.col2, src.col3, src.col4)
   ;  
+  ```
+
++ **insert without duplicate**
+
+  ```sql
+  insert into tableName(id, name, email) values
+  (1, 'sam', 'sam@gmail.com'),
+  (2, 'riju', 'riju@gmail.com'),
+  (4, 'alen', 'alen@gmail.com') 
+  on conflict(id) do nothing  -- column must be unique
+  ;
+  ```
+
++ **insert & update**
+
+  ```sql
+    insert into tableName(id, name, email) values
+    (1, 'sam', 'sam@gmail.com'),
+    (2, 'riju', 'rijuu@gmail.com'),
+    (5, 'bishopp', 'bishop@gmail.com') 
+    on conflict(id) do update  -- column must be unique
+    set
+      name = EXCLUDED.name
+      , email = EXCLUDED.email
+      , update_at = current_timestamp
+    ;
   ```
 
 # dql
