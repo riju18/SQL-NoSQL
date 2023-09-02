@@ -276,7 +276,7 @@ select * from pg_catalog.pg_indexes pi2 ;
 + <span style="color: yellow">create child table (partition table)</span>
 
     ```sql
-    create table child_table(check(parent_table_column_name condition)) inherits(parent_table);
+    create table child_table(check(parent_table_column_name_condition)) inherits(parent_table);
     -- "check" is a constraint which applies some conditions before iserting data into table.
     ```
 
@@ -288,11 +288,11 @@ select * from pg_catalog.pg_indexes pi2 ;
   LANGUAGE plpgsql
   AS $function$
   begin
-    if (extract(year from new.parentTableCol) >= 2015 and extract(year from new.parentTableCol) < 2016) then
+    if (extract(year from new.parentTableCol) = 2015) then
     insert into public.childTable1 values (new.*) ;
-    elsif (extract(year from new.parentTableCol) >= 2016 and extract(year from new.parentTableCol) < 2017) then
+    elsif (extract(year from new.parentTableCol) = 2016) then
     insert into public.childTable2 values (new.*) ;
-    elsif (extract(year from new.parentTableCol) >= 2017 and extract(year from new.parentTableCol) < 2018) then
+    elsif (extract(year from new.parentTableCol) = 2017) then
     insert into public.childTable3 values (new.*) ;
     else
     raise exception 'date must be less than 2018' ;
@@ -305,7 +305,7 @@ select * from pg_catalog.pg_indexes pi2 ;
 + <span style="color: yellow">trigger</span>
 
   ```sql
-  create trigger triggerName before insert on public.childTable for each row execute procedure public.fn_name() ;
+  create trigger triggerName before insert on parentTable for each row execute procedure public.fn_name() ;
   ```
 
 + <span style="color: yellow">copy</span>
