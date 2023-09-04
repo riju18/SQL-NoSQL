@@ -445,105 +445,105 @@ select * from pg_catalog.pg_indexes pi2 ;
 
 + **delete duplicate**
 
-+ sample data
+  + sample data
 
-     ```text
-    sample input:
-    +---+---------+---------------+-------+----+                   
-    id  | model   | brand        | color | make          
-    +---+---------+--------------+-------+----+                  
-     1 | Model S | Tesla         |Blue    |2018
-     2 | EQS     | Mercedes-Benz |Black   |2022
-     3 | iX      | BMW           |Red     |2022
-     4 | Ioniq 5 | Hyundai       |White   |2021
-     5 | Model S | Tesla         |Silver  |2018
-     6 | Ioniq 5 | Hyundai       |Green   |2021
-    +-------------------------------------------
-    ```
-
-+ solution
-  1) Delete using Unique identifier
-
-      ```sql
-      -- using max id technique
-
-      delete
-      from
-        cars
-      where 1=1
-        and id in (
-          select
-            max(id)
-          from
-            cars
-          group by
-            model,
-            brand
-          having
-            count(1) > 1  -- to find duplicate
-        );
+      ```text
+      sample input:
+      +---+---------+---------------+-------+----+                   
+      id  | model   | brand        | color | make          
+      +---+---------+--------------+-------+----+                  
+      1 | Model S | Tesla         |Blue    |2018
+      2 | EQS     | Mercedes-Benz |Black   |2022
+      3 | iX      | BMW           |Red     |2022
+      4 | Ioniq 5 | Hyundai       |White   |2021
+      5 | Model S | Tesla         |Silver  |2018
+      6 | Ioniq 5 | Hyundai       |Green   |2021
+      +-------------------------------------------
       ```
 
-  2) self join
+  + solution
+    1) Delete using Unique identifier
 
-      ```sql
+        ```sql
+        -- using max id technique
+
+        delete
+        from
+          cars
+        where 1=1
+          and id in (
+            select
+              max(id)
+            from
+              cars
+            group by
+              model,
+              brand
+            having
+              count(1) > 1  -- to find duplicate
+          );
+        ```
+
+    2) self join
+
+        ```sql
+          delete
+          from
+            cars
+          where
+            id in (
+              select
+                c2.id
+              from
+                cars c1
+              join cars c2 on
+                c1.model = c2.model
+                and c1.brand = c2.brand
+              where
+                c1.id < c2.id
+            );
+        ```
+
+    3) winfow fn
+
+        ```sql
         delete
         from
           cars
         where
-          id in (
+          id in ( -- max id
             select
-              c2.id
+              id
             from
-              cars c1
-            join cars c2 on
-              c1.model = c2.model
-              and c1.brand = c2.brand
+              ( -- find out duplicate
+                select
+                  *
+                  , row_number() over(partition by model, brand order by id) as rn
+                from
+                  cars
+              ) x
             where
-              c1.id < c2.id
+              x.rn > 1
           );
-      ```
+        ```
 
-  3) winfow fn
+    4) using min
 
-      ```sql
-      delete
-      from
-        cars
-      where
-        id in ( -- max id
-          select
-            id
-          from
-            ( -- find out duplicate
-              select
-                *
-                , row_number() over(partition by model, brand order by id) as rn
-              from
-                cars
-            ) x
-          where
-            x.rn > 1
-        );
-      ```
-
-  4) using min
-
-      ```sql
-      delete
-      from
-        cars
-      where
-        id not in (
-          select
-            min(id)
-          from
-            cars
-          group by
-            model,
-            brand
-        );
-      ```
+        ```sql
+        delete
+        from
+          cars
+        where
+          id not in (
+            select
+              min(id)
+            from
+              cars
+            group by
+              model,
+              brand
+          );
+        ```
 
 # dql
 
@@ -1755,13 +1755,12 @@ select * from pg_catalog.pg_indexes pi2 ;
     +---+-------------+----------+
     id  | name        | new_name |
     +---+-------------+----------+
-    1   | John        |  Smith
-    1   |  James     |  Michael
-    2   |  Michael   |  James
-    3   |  George     |  Stewart
-    4   |  Stewart   |  George
-    5   |  Robin     |  Robin
-    +---+--------------+---------+
+    1   |  James      | Michael 
+    2   |  Michael    | James
+    3   |  George     | Stewart
+    4   |  Stewart    | George
+    5   |  Robin      | Robin
+    +---+-------------+---------+
   ```
 
   ```sql
