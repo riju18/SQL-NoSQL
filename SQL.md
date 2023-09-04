@@ -1522,28 +1522,24 @@ select * from pg_catalog.pg_indexes pi2 ;
 # acid
 
 + **Automacity**
-
-    ```text
-    A transaction is either completed in its entirety or rolled back to its previous state if it cannot be completed. Atomicity ensures that a transaction always leaves the database in a valid state, even if it fails in the middle.
-    ```
+  >
+  >  A transaction is either completed in its entirety or rolled back to its previous state if it cannot be completed. Atomicity ensures that a transaction always leaves the database in a valid state, even if it fails in the middle.
+  >
 
 + **Consistency**
-
-  ```text
-  This property ensures that a transaction brings the database from one valid state to another. For example, a transaction that updates a table with a foreign key constraint must ensure that the foreign key relationships remain valid after the update.
-  ```
+  >
+  > This property ensures that a transaction brings the database from one valid state to another. For example, a transaction that updates a table with a foreign key constraint must ensure that the foreign key relationships remain valid after the update.
+  >
 
 + **Isolation**
-
-  ```text
-  This property ensures that concurrent transactions do not interfere with each other. Isolation ensures that the changes made by one transaction are not visible to other transactions until the first transaction is committed.
-  ```
+  >
+  > This property ensures that concurrent transactions do not interfere with each other. Isolation ensures that the changes made by one transaction are not visible to other transactions until the first transaction is committed.
+  >
 
 + **Durability**
-
-  ```text
-  This property ensures that once a transaction is committed, its changes are permanent and will survive any subsequent system failures. The changes made by a committed transaction are stored in non-volatile storage (such as a hard disk) and can be recovered in the event of a system failure.
-  ```
+  >
+  > This property ensures that once a transaction is committed, its changes are permanent and will survive any subsequent system failures. The changes made by a committed transaction are stored in non-volatile storage (such as a hard disk) and can be recovered in the event of a system failure.
+  >
 
 # tricky-sql
 
