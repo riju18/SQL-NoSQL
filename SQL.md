@@ -17,6 +17,7 @@
 + [Normalization](#normalization)
 + [Data Modeling](#data_modeling)
 + [ACID](#acid)
++ [Datbase management](#dbms)
 + [SQL practice](#tricky-sql)
 
 # page
@@ -1540,6 +1541,27 @@ select * from pg_catalog.pg_indexes pi2 ;
   >
   > This property ensures that once a transaction is committed, its changes are permanent and will survive any subsequent system failures. The changes made by a committed transaction are stored in non-volatile storage (such as a hard disk) and can be recovered in the event of a system failure.
   >
+
+# dbms
+
++ **Data modeling**
+  >
+  > Data modeling is the process of creating a visual representation of the structure and relationships within a database. It's essential in database design because it helps ensure that the database is organized efficiently, data is stored accurately, and queries can be executed effectively.
+
+  + conceptual data model VS logical data model VS physical data model
+    >
+    > **Conceptual Data Model**
+    >
+    > This represents high-level, abstract concepts and entities in a database, without considering implementation details. It focuses on what needs to be stored and how entities are related.
+
+    >
+    > **Logical Data Model**
+    >
+    > It defines the structure of the database in a more detailed manner, including tables, columns, and relationships between tables. It's independent of the specific database management system (DBMS) and focuses on data organization and integrity.
+
+    > **Physical Data Model**
+    >
+    > This model is closely tied to a specific DBMS and represents how the data will be stored on the physical storage devices. It includes considerations like indexes, data types, and constraints.
 
 # tricky-sql
 
