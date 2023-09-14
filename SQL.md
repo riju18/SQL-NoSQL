@@ -1563,6 +1563,34 @@ select * from pg_catalog.pg_indexes pi2 ;
     >
     > This model is closely tied to a specific DBMS and represents how the data will be stored on the physical storage devices. It includes considerations like indexes, data types, and constraints.
 
++ **DB design principles**
+
+  + Normalization
+  + ACID
+  + Efficiency
+
+    >
+    > **Principle** : Design your database schema and queries to be efficient in terms of storage and performance.
+    >
+    > **Example** : Use appropriate data types to minimize storage space, and create indexes on frequently queried columns to speed up search operations.
+  
+  + Scalability
+  
+    >
+    > **Principle** : Design the database to scale horizontally (adding more servers) or vertically (upgrading existing servers) as the application's data and user load grow.
+    > 
+    > **Example** : Sharding a database to distribute data across multiple servers or using cloud-based databases that can automatically scale based on demand.
+  
+  + Flexibility
+
+    > 
+    > **Principle** : Design the database schema to be flexible and accommodate future changes or additions to the data model.
+    >
+    > **Example** : Adding optional attributes to a "Product" table to support new product features without requiring a major schema overhaul.
+  
+  + Security
+  + Documentation
+
 # tricky-sql
 
 + **return only brand which amount is incresing each year**
