@@ -60,20 +60,25 @@
 
 + **stop server**
 
-  + <span style='color: orange'>**Types of shutdown**</span>
-    + <span style='color: yellow'>**smart**</span> : It disallows new connection but lets existing sessions end the transaction normally. It shutdows after all session terminated.
-    + <span style='color: yellow'>**fast**</span> : It disallows new connection and abort their connection & exits gracefully(when the server restarts it doesn't need recover data)
-    + <span style='color: yellow'>**immediate**</span> : Quits/aborts with proper shutdown which lead to recovery on next startup.
+  + **Types of shutdown**
+    + **smart** : It disallows new connection but lets existing sessions end the transaction/work normally. It shutdows after all session terminated.
+    + **fast** : It disallows new connection and abort their connection & exits gracefully(when the server restarts it doesn't need recover data)
+    + **immediate** : Quits/aborts with proper shutdown which lead to recovery on next startup.
 
-    ```psql
+    ```sh
     pg_ctl stop;
     ```
 
 + **restart and reload server**
 
-    ```psql
-    pg_ctl restart;
-    pg_ctl reload;
+    ```sh
+    pg_ctl restart;  
+    pg_ctl reload;  # when any change in config file without restarting
+
+    # or,
+
+    systemctl restart postgresql-12
+    system reload  postgresql-12
     ```
 
 + **conf**
@@ -330,16 +335,50 @@ select * from pg_catalog.pg_indexes pi2 ;
 
 # backup-restore
 
-+ **restore/import**
-  + export DB as **tar** file
++ backup
 
-    ```sh
-    PGPASSWORD=password pg_dump -U your_username -d your_database_name -F t -f output_file.tar
-    
-    -- F : custom format
-    t    : tar
-    -f   : output format
-    ```
+  ```mermaid
+  flowchart TB
+
+  backup -- sql representation --> logical
+  backup --> physical
+  physical --> online
+  physical --> offline
+  ```
+
+  + logical
+    + export DB as **text** file
+
+      ```sh
+      PGPASSWORD=password pg_dump -U your_username -d your_database_name > output_file  # by default text representation
+
+      # all DB
+      PGPASSWORD=password pg_dumpall -U your_username > output_file
+
+      # export as smaller chunks
+      PGPASSWORD=password pg_dumpall -U your_username | split -b 1k/m/g > output_file
+      ```
+
+  + physical
+    + **offline**
+      + export DB as **tar** file
+
+        ```sh
+        # single DB
+        PGPASSWORD=password pg_dump -U your_username -d your_database_name -F t -f output_file.tar
+        
+        -- F : custom format
+        t    : tar
+        -f   : output format
+
+        # all DB
+        PGPASSWORD=password pg_dumpall -U your_username -F t -f output_file.tar
+
+        # export as smaller chunks
+        PGPASSWORD=password pg_dumpall -U your_username | split -b 1k/m/g > output_file.tar
+        ```
+
++ **restore/import**
 
   + import DB as **tar** file
 
@@ -1578,12 +1617,12 @@ select * from pg_catalog.pg_indexes pi2 ;
   
     >
     > **Principle** : Design the database to scale horizontally (adding more servers) or vertically (upgrading existing servers) as the application's data and user load grow.
-    > 
+    >
     > **Example** : Sharding a database to distribute data across multiple servers or using cloud-based databases that can automatically scale based on demand.
   
   + Flexibility
 
-    > 
+    >
     > **Principle** : Design the database schema to be flexible and accommodate future changes or additions to the data model.
     >
     > **Example** : Adding optional attributes to a "Product" table to support new product features without requiring a major schema overhaul.
