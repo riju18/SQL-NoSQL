@@ -1583,6 +1583,15 @@ select * from pg_catalog.pg_indexes pi2 ;
 
 # dbms
 
++ **Row based vs. colum based**
+  | row-based                   | col-based         | 
+  | -----------------------     | ----------------- |
+  | optimal for read,write      | writes are slower |
+  | oltp                        | olap              |
+  | compression isn't efficient | efficient         |
+  | aggregation isn't efficient | efficient         |
+  | efficient queries           | inefficient       |
+
 + **Data modeling**
   >
   > Data modeling is the process of creating a visual representation of the structure and relationships within a database. It's essential in database design because it helps ensure that the database is organized efficiently, data is stored accurately, and queries can be executed effectively.
