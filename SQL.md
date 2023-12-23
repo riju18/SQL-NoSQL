@@ -18,6 +18,7 @@
 + [Data Modeling](#data_modeling)
 + [ACID](#acid)
 + [Datbase management](#dbms)
++ [Index](#index)
 + [SQL practice](#tricky-sql)
 
 # page
@@ -1638,6 +1639,23 @@ select * from pg_catalog.pg_indexes pi2 ;
   
   + Security
   + Documentation
+
+# index
+
++ single index
+  ```sql
+  create index indx_name on table_name(col_name) ;
+  ```
+
++ combine index
+  ```sql
+  create index idx_name on table_name(col1,col2);
+  ```
+
++ drop index
+  ```sql
+  drop index idx_name ;
+  ```
 
 # tricky-sql
 
