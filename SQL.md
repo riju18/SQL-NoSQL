@@ -275,63 +275,105 @@ select * from pg_catalog.pg_indexes pi2 ;
     drop table child_table;  -- drop child_table
     ```
 
-## <span style="color: orange">partitioning</span>
+## <span style="color: orange">partitioning and sharding</span>
 
 > + postgres partitions table via inheritance
 >
-> + There are 2 types of partition : **range** & **list**
+> + There are 2 types of partitions: **Horizontal**(range or list) and **vertical**(large col)
+> 
+> + Sharding is splitting the big table into multiple tables across multiple db servers
 
-+ <span style="color: yellow">create child table (partition table)</span>
++ **Solution1**
+
+  + <span style="color: yellow">create child table (partition table)</span>
+
+      ```sql
+      create table child_table(check(parent_table_column_name_condition)) inherits(parent_table);
+      -- "check" is a constraint which applies some conditions before iserting data into table.
+      ```
+
+  + <span style="color: yellow">function</span>
 
     ```sql
-    create table child_table(check(parent_table_column_name_condition)) inherits(parent_table);
-    -- "check" is a constraint which applies some conditions before iserting data into table.
+    CREATE OR REPLACE FUNCTION public.fn_name()
+    RETURNS trigger
+    LANGUAGE plpgsql
+    AS $function$
+    begin
+      if (extract(year from new.parentTableCol) = 2015) then
+      insert into public.childTable1 values (new.*) ;
+      elsif (extract(year from new.parentTableCol) = 2016) then
+      insert into public.childTable2 values (new.*) ;
+      elsif (extract(year from new.parentTableCol) = 2017) then
+      insert into public.childTable3 values (new.*) ;
+      else
+      raise exception 'date must be less than 2018' ;
+      end if ;
+      return null ;
+    end ;
+    $function$ ;
     ```
 
-+ <span style="color: yellow">function</span>
-
-  ```sql
-  CREATE OR REPLACE FUNCTION public.fn_name()
-  RETURNS trigger
-  LANGUAGE plpgsql
-  AS $function$
-  begin
-    if (extract(year from new.parentTableCol) = 2015) then
-    insert into public.childTable1 values (new.*) ;
-    elsif (extract(year from new.parentTableCol) = 2016) then
-    insert into public.childTable2 values (new.*) ;
-    elsif (extract(year from new.parentTableCol) = 2017) then
-    insert into public.childTable3 values (new.*) ;
-    else
-    raise exception 'date must be less than 2018' ;
-    end if ;
-    return null ;
-  end ;
-  $function$ ;
-  ```
-
-+ <span style="color: yellow">trigger</span>
-
-  ```sql
-  create trigger triggerName before insert on parentTable for each row execute procedure public.fn_name() ;
-  ```
-
-+ <span style="color: yellow">copy</span>
-  + create table with data
+  + <span style="color: yellow">trigger</span>
 
     ```sql
-    create table table_name as source_table; 
+    create trigger triggerName before insert on parentTable for each row execute procedure public.fn_name() ;
     ```
 
-  + create table with no data
+  + <span style="color: yellow">copy</span>
+    + create table with data
 
+      ```sql
+      create table table_name as source_table; 
+      ```
+
+    + create table with no data
+
+      ```sql
+      create table table_name as table source_table with no data; 
+
+      -- or
+      create table tableName
+      as
+      select * from src_table where 1=2;
+      ```
+  + **Solution2**
     ```sql
-    create table table_name as table source_table with no data; 
+    -- 1. create a parent table from master table
 
-    -- or
-    create table tableName
-    as
-    select * from src_table where 1=2;
+    create table student_grade_pt(
+      id serial4 not null,
+      grade int not null)
+    partition by range(grade)
+    ;
+
+    -- 2.create a child tables
+
+    create table student_grade_30_50(like student_grade_pt including indexes);
+
+    create table student_grade_51_70(like student_grade_pt including indexes);
+
+    create table student_grade_above_70(like student_grade_pt including indexes);
+
+    -- 3.inherit
+
+    alter table public.student_grade_pt 
+    attach partition public.student_grade_30_50
+    for values from (30) to (50);
+
+    alter table public.student_grade_pt 
+    attach partition public.student_grade_51_70
+    for values from (51) to (70);
+
+    alter table public.student_grade_pt 
+    attach partition public.student_grade_above_70
+    for values from (71) to (100);
+
+    -- 4. insert data
+    insert into public.parent_table 
+    select * from public.master_table 
+    where 1=1
+    ;
     ```
 
 # backup-restore
