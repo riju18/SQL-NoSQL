@@ -20,6 +20,7 @@
 + [Datbase management](#dbms)
 + [Index](#index)
 + [SQL practice](#tricky-sql)
++ [SQL Optimization](#optimization)
 
 # page
 
@@ -1930,3 +1931,123 @@ select * from pg_catalog.pg_indexes pi2 ;
   from
     students;
   ```
+
+# optimization
+
+- Indexing
+
+  - Create appropriate indexes on frequently queried columns, especially for primary keys and foreign keys.
+
+  - **Why it helps**: Indexes allow the database to locate and retrieve rows faster, reducing the need for full table scans.
+
+- Avoinding SELECT *
+
+  - Fetch only the required columns instead of using SELECT *.
+
+  - **Why it helps**: Limits the amount of data retrieved and reduces I/O, improving performance.
+
+- Query Execution Plan
+
+  - Use tools like EXPLAIN or EXPLAIN PLAN to analyze the query's execution path.
+
+  - **Why it helps**: Identifies bottlenecks like unnecessary table scans or inefficient joins, allowing you to adjust queries or indexes.
+
+
+- Proper use of joins and sunqueries
+
+  - Replace correlated subqueries with JOINs or optimize join order.
+
+  - **Why it helps**: Joins are often more efficient than subqueries, as they reduce the number of times the database processes the data.
+
+- Use of query caching
+
+  - Cache the results of frequently run queries.
+
+  - **Why it helps**: Reduces repetitive computation and speeds up response time for identical queries.
+
+- Use **EXPLAIN** or **EXPLAIN ANALYZE** → Identify bottlenecks
+
+- **Optimize WHERE Clause**
+
+  - Avoid functions on indexed columns (Precalculate values)
+    - bad
+      ```sql
+      SELECT * FROM users WHERE LOWER(email) = 'test@example.com';
+      ```
+    - optimized
+      ```sql
+      SELECT * FROM users WHERE email = 'test@example.com';
+      ```
+  
+  - Avoid OR, use UNION ALL when possible
+    - bad
+      ```sql
+      SELECT * FROM sales WHERE region = 'US' OR region = 'EU';
+      ```
+    - optimized
+      ```sql
+      SELECT * FROM sales WHERE region = 'US'
+      UNION ALL
+      SELECT * FROM sales WHERE region = 'EU';
+      ```
+- Optimize JOINs
+
+  - filter before joining
+    ```sql
+    SELECT c.name, o.amount
+    FROM customers c
+    INNER JOIN orders o ON c.id = o.customer_id
+    WHERE o.status = 'shipped';
+    ```
+- **EXISTS** instead of **IN**
+  - bad
+    ```sql
+    SELECT * FROM orders WHERE customer_id IN (SELECT id FROM customers);
+    ```
+  - optimized
+    ```sql
+    SELECT * FROM orders o WHERE EXISTS (SELECT 1 FROM customers c WHERE c.id = o.customer_id);
+    ```
+
+- Avoid **HAVING** for filtering (use **WHERE** instead)
+  - bad
+    ```sql
+    SELECT department, COUNT(*) FROM employees GROUP BY department HAVING department = 'HR';
+    ```
+  - optimized
+    ```sql
+    SELECT department, COUNT(*) FROM employees WHERE department = 'HR' GROUP BY department;
+    ```
+
+- Use Approximate Aggregations (for large datasets)
+  - BigQuery: APPROX_COUNT_DISTINCT()
+  - PostgreSQL: hyperloglog extension
+
+- Optimize Sorting & Pagination
+
+  - bad
+    ```sql
+    SELECT * FROM orders ORDER BY order_date DESC LIMIT 10 OFFSET 10000;
+    ```
+  - optimized
+    ```sql
+    SELECT 
+      * 
+    FROM 
+      orders 
+    WHERE order_date < 
+      (
+          SELECT 
+            order_date 
+          FROM 
+            orders 
+          ORDER BY order_date DESC 
+          LIMIT 1 OFFSET 10000
+      ) 
+    ORDER BY order_date DESC 
+    LIMIT 10;
+    ```
+- Use CTEs
+- Cache
+  - PostgreSQL: pgbouncer
+  - BigQuery: BI Engine
